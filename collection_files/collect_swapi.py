@@ -6,8 +6,11 @@ import os
 # There are 82 people and 60 planets in swapi, which satisfies the
 # "Access and store at least 100 rows in your database from each API/website" requirement
 
-# People and planets each get their own seperate tables in the database
-# The character table contains a foriegn key from the planet table
+# People and planets each get their own seperate tables in the database, which satisfies the
+# "For at least one API you must have two tables" requirement.
+
+# The character table contains a foriegn key from the planet table, which satisfies the
+# "For at least one API you must have two tables that share an integer key" requirement.
 
 
 def get_data(type="character", request_id=1):
