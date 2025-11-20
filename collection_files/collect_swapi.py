@@ -43,7 +43,7 @@ def get_data(type="character", request_id=1):
 
 # For debugging
 def test():
-    get_character()
+    get_data()
 
 
 test()
