@@ -43,7 +43,15 @@ def get_data(type="character", request_id=1):
 
 
 def update_character_table(data, database_filename):
-    # TODO: create docstring for function
+    """
+    Adds character data to the specified database in the "characters" table.
+
+    ARGUMENTS:
+        data (dict): json data for a character
+        database_filename (string): filename of the target database
+    RETURNS:
+        None
+    """
 
     # Connect to SQLite database
     conn = sqlite3.connect(database_filename)
