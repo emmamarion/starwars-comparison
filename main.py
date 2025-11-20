@@ -7,7 +7,9 @@ from collection_files import collect_wookiepedia
 
 
 def main():
-    print("hello!")
+    database_filename = "starwars.db"
+
+    database_setup.database_setup(database_filename)
 
 
 if __name__ == "__main__":
