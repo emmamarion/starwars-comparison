@@ -52,7 +52,7 @@ def update_character_table(data, database_filename):
     character_id = data.get("url"[-2])
 
     cursor.execute(
-        """INSERT INTO characters (id, name, ) VALUES (?, ?)""",
+        """INSERT INTO characters (id, name) VALUES (?, ?)""",
         (character_id, character_name),
     )
     conn.commit()
@@ -65,4 +65,5 @@ def test():
     update_character_table(char_data, "starwars.db")
 
 
-test()
+if __name__ == "__main__":
+    test()
