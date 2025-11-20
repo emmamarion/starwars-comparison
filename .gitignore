@@ -1,0 +1,7 @@
+.DS_Store
+__pycache__/visualizations.cpython-313.pyc
+__pycache__/calculations.cpython-313.pyc
+__pycache__/database_setup.cpython-313.pyc
+collection_files/__pycache__/collect_swapi.cpython-313.pyc
+collection_files/__pycache__/collect_lego.cpython-313.pyc
+collection_files/__pycache__/collect_wookiepedia.cpython-313.pyc
