@@ -44,16 +44,20 @@ def get_data(type="character", request_id=1):
 
 def update_character_table(data, database_filename):
     # TODO: create docstring for function
+
     # Connect to SQLite database
     conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
+
+    # Get and save character information
     character_name = data.get("name", 0)
-    character_height = data.get("height", 0)
-    character_id = data.get("url"[-2])
+    character_height = int(data.get("height", 0))
+    character_id = data.get("url", 0)[-2]
+    character_homeworld_id = (data.get("homeworld", 0))[-2]
 
     cursor.execute(
-        """INSERT INTO characters (id, name) VALUES (?, ?)""",
-        (character_id, character_name),
+        """INSERT INTO characters (id, name, height, homeworld_id) VALUES (?, ?, ?, ?)""",
+        (character_id, character_name, character_height, character_homeworld_id),
     )
     conn.commit()
     conn.close()
