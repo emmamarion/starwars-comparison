@@ -1,8 +1,17 @@
 import sqlite3
 
 
-def database_setup():
-    conn = sqlite3.connect("starwars.db")
+def database_setup(filename):
+    """
+    Generates database if it doesn't exist and then creates all tables.
+
+    ARGS:
+        filename (str): filename of the database to create
+
+    RETURNS:
+        None
+    """
+    conn = sqlite3.connect(filename)
     cursor = conn.cursor()
 
     # Table 1: character table
@@ -38,6 +47,3 @@ def database_setup():
 
     conn.commit()  # save the changes
     conn.close()  # close the connection
-
-
-database_setup()
