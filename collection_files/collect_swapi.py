@@ -13,9 +13,12 @@ import os
 def get_data(type="character", request_id=1):
     """
     creates an API request to the swapi and retreieves information for a SINGLE entry
+
     ARGUMENTS:
         type (string): specifies the type of request, either "character" or "planet"
         request_id (int): the id of the character
+    RETURNS:
+        data: json dictionary of requested data
     """
 
     # Set the base url for the request depending on the type argument
@@ -33,17 +36,33 @@ def get_data(type="character", request_id=1):
         request_url = base_url + character_id_str
         response = requests.get(request_url)
         data = response.json()
+        return data
     except requests.exceptions.RequestException as e:
         print(f"Error fetching API data: {e}")
         exit()
 
-    # TODO Connect to SQLite database
-    pass
+
+def update_character_table(data, database_filename):
+    # TODO: create docstring for function
+    # Connect to SQLite database
+    conn = sqlite3.connect(database_filename)
+    cursor = conn.cursor()
+    character_name = data.get("name", 0)
+    character_height = data.get("height", 0)
+    character_id = data.get("url"[-2])
+
+    cursor.execute(
+        """INSERT INTO characters (id, name, ) VALUES (?, ?)""",
+        (character_id, character_name),
+    )
+    conn.commit()
+    conn.close()
 
 
 # For debugging
 def test():
-    get_data()
+    char_data = get_data("character", 1)
+    update_character_table(char_data, "starwars.db")
 
 
 test()
