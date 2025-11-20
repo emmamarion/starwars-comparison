@@ -71,6 +71,20 @@ def update_character_table(data, database_filename):
     conn.close()
 
 
+def update_planet_table(data, database_filename):
+    # TODO: IMPLEMENT
+    """
+    Adds planet data to the specified database in the "planets" table.
+
+    ARGUMENTS:
+        data (dict): json data for a planet
+        database_filename (string): filename of the target database
+    RETURNS:
+        None
+    """
+    pass
+
+
 # For debugging
 def test():
     char_data = get_data("character", 1)
