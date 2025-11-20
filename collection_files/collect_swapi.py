@@ -1,4 +1,5 @@
 import requests
+import sqlite3
 import os
 
 
@@ -14,13 +15,16 @@ def get_character(character_id=1):
     # convert the character id to a string to append to url
     character_id_str = str(character_id)
 
-    request_url = base_url + character_id_str
-    response = requests.get(request_url)
-
-    if response.status_code == 200:  # if the response was successful
+    # Make the API request
+    try:
+        request_url = base_url + character_id_str
+        response = requests.get(request_url)
         character_data = response.json()
-        # TODO: finish function
+    except requests.exceptions.RequestException as e:
+        print(f"Error fetching API data: {e}")
+        exit()
 
+    # Connect to SQLite database
     pass
 
 
