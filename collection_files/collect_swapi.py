@@ -13,6 +13,7 @@ import os
 # "For at least one API you must have two tables that share an integer key" requirement.
 
 
+# TODO: implement handling for "unknown" values
 def get_data(type="character", request_id=1):
     """
     creates an API request to the swapi and retreieves information for a SINGLE entry
@@ -28,7 +29,7 @@ def get_data(type="character", request_id=1):
     base_url = (
         "http://swapi.dev/api/people/"
         if type.lower() == "character"
-        else "http://swapi.dev/api/planet/"
+        else "http://swapi.dev/api/planets/"
     )
 
     # Convert the request id to a string to append to url
@@ -61,10 +62,10 @@ def update_character_table(data, database_filename):
     cursor = conn.cursor()
 
     # Get and save character information
-    character_name = data.get("name", 0)
-    character_height = int(data.get("height", 0))
+    character_name = data.get("name")
+    character_height = int(data.get("height"))
     character_id = data.get("url", 0)[-2]
-    character_homeworld_id = (data.get("homeworld", 0))[-2]
+    character_homeworld_id = data.get("homeworld")[-2]
 
     cursor.execute(
         """INSERT INTO characters (id, name, height, homeworld_id) VALUES (?, ?, ?, ?)""",
@@ -85,13 +86,37 @@ def update_planet_table(data, database_filename):
     RETURNS:
         None
     """
-    pass
+    # Connect to SQLite database
+    conn = sqlite3.connect(database_filename)
+    cursor = conn.cursor()
+
+    planet_name = data.get("name")
+    planet_population = data.get("population")
+    planet_id = data.get("url", 0)[-2]
+    planet_climate = data.get("climate")
+
+    # Check if the row already exists
+    cursor.execute("SELECT 1 FROM planets WHERE id = ?", (planet_id,))
+    row_exists = cursor.fetchone()
+
+    if row_exists:
+        cursor.execute(
+            """UPDATE planets SET name = ?, population = ? WHERE id = ?""",
+            (planet_name, planet_population, planet_id),
+        )
+    else:
+        cursor.execute(
+            """INSERT INTO planets (id, name, population) VALUES (?, ?, ?)""",
+            (planet_id, planet_name, planet_population),
+        )
+    conn.commit()
+    conn.close()
 
 
 # For debugging
 def test():
-    char_data = get_data("character", 1)
-    update_character_table(char_data, "starwars.db")
+    planet_data = get_data("planet", 3)
+    update_planet_table(planet_data, "starwars.db")
 
 
 if __name__ == "__main__":
