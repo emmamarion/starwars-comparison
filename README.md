@@ -1,3 +1,3 @@
-# starwars-comparison
+# Final SI201 project: starwars-comparison
 <!-- TODO: ADD NAMES -->
-emma marion,
+**Names:** emma marion,
