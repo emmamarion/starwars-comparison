@@ -14,22 +14,23 @@ def database_setup(filename):
     conn = sqlite3.connect(filename)
     cursor = conn.cursor()
 
-    # Table 1: SWAPI vehicle table
+    # Table 1: SWAPI manufacturer table (Parent table)
     table_1 = """
-        CREATE TABLE IF NOT EXISTS vehicles (
-            id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            legnth INTEGER,
-            cost_in_credits INTEGER
-            manufacturer INTEGER
+        CREATE TABLE IF NOT EXISTS manufacturers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE
         )
     """
 
-    # Table 2: manufacturer
+    # Table 2: SWAPI vehicle data (Child table)
     table_2 = """
-        CREATE TABLE IF NOT EXISTS manufacturers (
+        CREATE TABLE IF NOT EXISTS vehicles (
             id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL
+            name TEXT,
+            length INTEGER, 
+            cost_in_credits INTEGER,
+            manufacturer_id INTEGER,
+            FOREIGN KEY (manufacturer_id) REFERENCES manufacturers(id)
         )
     """
 
@@ -40,10 +41,13 @@ def database_setup(filename):
             media_type TEXT
         )
     """
+    # Parent tables
+    cursor.execute(table_1)  # Create Manufacturers
+    cursor.execute(table_5)  # Create Media Types
 
-    cursor.execute(table_1)
-    cursor.execute(table_2)
-    cursor.execute(table_5)
+    # Child tables
+    cursor.execute(table_2)  # Creat Vehicles
 
     conn.commit()  # save the changes
     conn.close()  # close the connection
+    print("Database setup complete")
