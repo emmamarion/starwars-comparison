@@ -5,3 +5,4 @@ __pycache__/database_setup.cpython-313.pyc
 collection_files/__pycache__/collect_swapi.cpython-313.pyc
 collection_files/__pycache__/collect_lego.cpython-313.pyc
 collection_files/__pycache__/collect_wookiepedia.cpython-313.pyc
+starwars.db
