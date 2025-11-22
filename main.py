@@ -11,7 +11,7 @@ def main():
 
     database_setup.database_setup(database_filename)
     collect_swapi.update_character_table(
-        collect_swapi.get_data("character", 1), database_filename
+        collect_swapi.get_vehicle_data("character", 1), database_filename
     )
 
 
