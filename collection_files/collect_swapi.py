@@ -14,7 +14,6 @@ import os
 # "For at least one API you must have two tables that share an integer key" requirement.
 
 
-# TODO: implement handling for "unknown" values
 def get_vehicle_data(type="vehicle", request_id=1):
     """
     creates an API request to the swapi and retreieves information for a SINGLE entry
@@ -23,7 +22,7 @@ def get_vehicle_data(type="vehicle", request_id=1):
         type (string): specifies the type of request, either "starship" or "vehicle"
         request_id (int): the id of the vehicle
     RETURNS:
-        data: json dictionary of requested data
+        data (dict): json dictionary of requested data
     """
 
     # Set the base url for the request depending on the type argument
@@ -55,7 +54,7 @@ def get_vehicle_data(type="vehicle", request_id=1):
 
 def update_vehicle_table(data, database_filename):
     """
-    Adds vehicle data to the specified database in the "vehicles" table.
+    Adds vehicle data for a SINGLE vehicle to the specified database in the "vehicles" table.
 
     ARGUMENTS:
         data (dict): json data for a vehicle
@@ -98,7 +97,6 @@ def update_vehicle_table(data, database_filename):
 
 
 def get_manufacturer_data(database_filename):
-    # TODO: IMPLEMENT
     """
     Iterates through vehicle IDs to find manufacturers.
 
@@ -112,17 +110,64 @@ def get_manufacturer_data(database_filename):
     for i in range(1, 76):
         vehicle_data = get_vehicle_data("vehicle", i)  # get data for a single vehicle
 
-        if vehicle_data:  # if getting data was successful
+        # if getting data was successful
+        if vehicle_data:
+
             # Grab the manufacturer
             vehicle_manufacturer = vehicle_data.get("manufacturer")
 
-            # Split manufacturers if there are multiple (e.g., "Incom, Subpro")
+            # Check if the manufacturer exists and isn't "unknown"
             if vehicle_manufacturer and vehicle_manufacturer != "unknown":
-                if vehicle_manufacturer not in manufacturer_list:
-                    manufacturer_list.append(vehicle_manufacturer)
-                    print(f"Found: {vehicle_manufacturer}")
+
+                # Split the string by comma
+                # "Incom, Subpro" becomes ["Incom", " Subpro"]
+                split_names = vehicle_manufacturer.split(",")
+
+                for name in split_names:
+                    # 2. Strip whitespace
+                    # " Subpro" becomes "Subpro"
+                    clean_name = name.strip()
+
+                    if clean_name not in manufacturer_list:
+                        manufacturer_list.append(clean_name)
+                        print(f"Found: {clean_name}")
 
     return manufacturer_list
+
+
+def update_manufacturer_table(manufacturer_list, database_filename, limit=25):
+    """
+    Takes a list of manufacturer names and inserts them into the database.
+    Ignores duplicates automatically.
+
+    ARGUMENTS:
+        manufacturer_list (list): List of strings (e.g., ["Incom", "Kuat"])
+        database_filename (str): The database file
+    """
+    # Connect to SQLite database
+    conn = sqlite3.connect(database_filename)
+    cursor = conn.cursor()
+
+    # Initalize variables
+    newly_added_count = 0
+
+    for name in manufacturer_list:
+        # Check if limit has been hit
+        if newly_added_count > limit:
+            print(f"Limit of {limit} new entries reached. Stopping")
+            break
+
+        # Try to insert
+        cursor.execute("INSERT OR IGNORE INTO manufacturers (name) VALUES (?)", (name,))
+
+        if cursor.rowcount > 0:
+            newly_added_count += 1
+            print(f"Added new manufacturer: {name}")
+
+    # Save changes
+    conn.commit()
+    conn.close()
+    print("Manufacturer table updated.")
 
 
 # For debugging
