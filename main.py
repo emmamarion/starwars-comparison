@@ -7,11 +7,14 @@ from collection_files import collect_wookiepedia
 
 
 def main():
+    # SETUP DATABASE
     database_filename = "starwars.db"
-
     database_setup.database_setup(database_filename)
-    collect_swapi.update_character_table(
-        collect_swapi.get_vehicle_data("character", 1), database_filename
+
+    # First api: SWAPI
+    manufacturer_list = collect_swapi.get_manufacturer_data(database_filename)
+    collect_swapi.update_manufacturer_table(
+        manufacturer_list, database_filename, limit=25
     )
 
 
