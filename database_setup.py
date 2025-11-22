@@ -14,22 +14,22 @@ def database_setup(filename):
     conn = sqlite3.connect(filename)
     cursor = conn.cursor()
 
-    # Table 1: character table
+    # Table 1: SWAPI vehicle table
     table_1 = """
-        CREATE TABLE IF NOT EXISTS characters (
+        CREATE TABLE IF NOT EXISTS vehicles (
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
-            height INTEGER,
-            homeworld_id INTEGER
+            legnth INTEGER,
+            cost_in_credits INTEGER
+            manufacturer INTEGER
         )
     """
 
-    # Table 2: planet table
+    # Table 2: manufacturer
     table_2 = """
-        CREATE TABLE IF NOT EXISTS planets (
+        CREATE TABLE IF NOT EXISTS manufacturers (
             id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            population INTEGER
+            name TEXT NOT NULL
         )
     """
 
