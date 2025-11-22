@@ -3,13 +3,14 @@ import sqlite3
 import os
 
 # NOTE:
-# There are 82 people and 60 planets in swapi, which satisfies the
+# There are 39 vehicles and 75 starships in swapi. We're treating them both as "vehicles"
+# and storing them in one table with over over 100 rows, which satisfies the
 # "Access and store at least 100 rows in your database from each API/website" requirement
 
-# People and planets each get their own seperate tables in the database, which satisfies the
+# Vehicles and manufacturers each get their own seperate tables in the database, which satisfies the
 # "For at least one API you must have two tables" requirement.
 
-# The vehicle table contains a foriegn key from the planet table, which satisfies the
+# The vehicle table contains a foriegn key from the manufacturer table, which satisfies the
 # "For at least one API you must have two tables that share an integer key" requirement.
 
 
@@ -74,13 +75,13 @@ def update_vehicle_table(data, database_filename):
     conn.close()
 
 
-def update_planet_table(data, database_filename):
+def update_manufacturer_table(data, database_filename):
     # TODO: IMPLEMENT
     """
-    Adds planet data to the specified database in the "planets" table.
+    Adds manufacturer data to the specified database in the "manufacturers" table.
 
     ARGUMENTS:
-        data (dict): json data for a planet
+        data (dict): json data for a vehicle
         database_filename (string): filename of the target database
     RETURNS:
         None
@@ -89,24 +90,24 @@ def update_planet_table(data, database_filename):
     conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
 
-    planet_name = data.get("name")
-    planet_population = data.get("population")
-    planet_id = data.get("url", 0)[-2]
-    planet_climate = data.get("climate")
+    manufacturer_name = data.get("name")
+    manufacturer_population = data.get("population")
+    manufacturer_id = data.get("url", 0)[-2]
+    manufacturer_climate = data.get("climate")
 
     # Check if the row already exists
-    cursor.execute("SELECT 1 FROM planets WHERE id = ?", (planet_id,))
+    cursor.execute("SELECT 1 FROM manufacturers WHERE id = ?", (manufacturer_id,))
     row_exists = cursor.fetchone()
 
     if row_exists:
         cursor.execute(
-            """UPDATE planets SET name = ?, population = ? WHERE id = ?""",
-            (planet_name, planet_population, planet_id),
+            """UPDATE manufacturers SET name = ?, population = ? WHERE id = ?""",
+            (manufacturer_name, manufacturer_population, manufacturer_id),
         )
     else:
         cursor.execute(
-            """INSERT INTO planets (id, name, population) VALUES (?, ?, ?)""",
-            (planet_id, planet_name, planet_population),
+            """INSERT INTO manufacturers (id, name, population) VALUES (?, ?, ?)""",
+            (manufacturer_id, manufacturer_name, manufacturer_population),
         )
     conn.commit()
     conn.close()
@@ -114,8 +115,8 @@ def update_planet_table(data, database_filename):
 
 # For debugging
 def test():
-    planet_data = get_data("planet", 3)
-    update_planet_table(planet_data, "starwars.db")
+    manufacturer_data = get_data("manufacturer", 3)
+    update_manufacturer_table(manufacturer_data, "starwars.db")
 
 
 if __name__ == "__main__":
