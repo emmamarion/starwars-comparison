@@ -3,7 +3,7 @@ import sqlite3
 import os
 
 # NOTE:
-# There are 39 vehicles and 75 starships in swapi. We're treating them both as "vehicles"
+# There are 76 vehicles and 75 starships in swapi. We're treating them both as "vehicles"
 # and storing them in one table with over over 100 rows, which satisfies the
 # "Access and store at least 100 rows in your database from each API/website" requirement
 
@@ -75,7 +75,7 @@ def update_vehicle_table(data, database_filename):
     conn.close()
 
 
-def update_manufacturer_table(data, database_filename):
+def get_manufacturer_data(database_filename):
     # TODO: IMPLEMENT
     """
     Adds manufacturer data to the specified database in the "manufacturers" table.
@@ -89,34 +89,25 @@ def update_manufacturer_table(data, database_filename):
     # Connect to SQLite database
     conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
+    manufacturer_list = []
 
-    manufacturer_name = data.get("name")
-    manufacturer_population = data.get("population")
-    manufacturer_id = data.get("url", 0)[-2]
-    manufacturer_climate = data.get("climate")
+    for i in range(0, 76):
+        vehicle_data = get_data("vehicle", i)  # get data for a single vehicle
 
-    # Check if the row already exists
-    cursor.execute("SELECT 1 FROM manufacturers WHERE id = ?", (manufacturer_id,))
-    row_exists = cursor.fetchone()
-
-    if row_exists:
-        cursor.execute(
-            """UPDATE manufacturers SET name = ?, population = ? WHERE id = ?""",
-            (manufacturer_name, manufacturer_population, manufacturer_id),
-        )
-    else:
-        cursor.execute(
-            """INSERT INTO manufacturers (id, name, population) VALUES (?, ?, ?)""",
-            (manufacturer_id, manufacturer_name, manufacturer_population),
-        )
-    conn.commit()
-    conn.close()
+        if vehicle_data:  # if getting data was successful
+            # grab the manufacturer
+            vehicle_manufacturer = vehicle_data.get("manufacturer")
+            if (
+                vehicle_manufacturer != "unknown"
+                and vehicle_manufacturer not in manufacturer_list
+            ):
+                manufacturer_list.append(vehicle_manufacturer)
+    return manufacturer_list
 
 
 # For debugging
 def test():
-    manufacturer_data = get_data("manufacturer", 3)
-    update_manufacturer_table(manufacturer_data, "starwars.db")
+    print(get_manufacturer_data("starwars.db"))
 
 
 if __name__ == "__main__":
