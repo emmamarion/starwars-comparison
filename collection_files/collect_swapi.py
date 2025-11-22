@@ -113,7 +113,7 @@ def get_manufacturer_data(database_filename):
         vehicle_data = get_vehicle_data("vehicle", i)  # get data for a single vehicle
 
         if vehicle_data:  # if getting data was successful
-            # grab the manufacturer
+            # Grab the manufacturer
             vehicle_manufacturer = vehicle_data.get("manufacturer")
 
             # Split manufacturers if there are multiple (e.g., "Incom, Subpro")
