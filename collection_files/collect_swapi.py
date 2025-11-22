@@ -1,6 +1,5 @@
 import requests
 import sqlite3
-import os
 
 # NOTE:
 # There are 76 vehicles and 75 starships in swapi. We're treating them both as "vehicles"
