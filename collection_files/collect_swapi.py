@@ -15,7 +15,7 @@ import os
 
 
 # TODO: implement handling for "unknown" values
-def get_data(type="vehicle", request_id=1):
+def get_vehicle_data(type="vehicle", request_id=1):
     """
     creates an API request to the swapi and retreieves information for a SINGLE entry
 
@@ -40,6 +40,12 @@ def get_data(type="vehicle", request_id=1):
     try:
         request_url = base_url + vehicle_id_str
         response = requests.get(request_url)
+
+        # Check if the request was actually successful
+        if response.status_code != 200:
+            # If ID doesn't exist, return None so the loop can skip it
+            return None
+
         data = response.json()
         return data
     except requests.exceptions.RequestException as e:
@@ -62,13 +68,29 @@ def update_vehicle_table(data, database_filename):
     conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
 
-    # Get and save vehicle information
+    # ======= NAME =======
     vehicle_name = data.get("name")
-    vehicle_length = int(data.get("length"))
-    vehicle_id = data.get("url", 0)[-2]
 
+    # ======= LENGTH =======
+    # Handle "unknown" and commas in numbers (e.g., "1,250")
+    raw_length = data.get("length", "0")
+
+    # Remove commas and check if it is a digit (handles "unknown")
+    clean_length = str(raw_length).replace(",", "")
+    if clean_length.replace(".", "", 1).isdigit():
+        vehicle_length = int(float(clean_length))
+
+    # ======= ID =======
+    # URLs look like: https://swapi.info/api/vehicles/4/
+    # Splitting by '/' and taking the second to last item
+    url_parts = data.get("url", "").split("/")
+    # Filter out empty strings to handle trailing slashes safely
+    url_parts = [p for p in url_parts if p]
+    vehicle_id = int(url_parts[-1])
+
+    # Uses INSERT OR IGNORE to prevent crashing if script is run twice
     cursor.execute(
-        """INSERT INTO vehicles (id, name, vehicle_length) VALUES (?, ?, ?)""",
+        """INSERT OR IGNORE INTO vehicles (id, name, vehicle_length) VALUES (?, ?, ?)""",
         (vehicle_id, vehicle_name, vehicle_length),
     )
     conn.commit()
@@ -78,30 +100,28 @@ def update_vehicle_table(data, database_filename):
 def get_manufacturer_data(database_filename):
     # TODO: IMPLEMENT
     """
-    Adds manufacturer data to the specified database in the "manufacturers" table.
+    Iterates through vehicle IDs to find manufacturers.
 
     ARGUMENTS:
-        data (dict): json data for a vehicle
         database_filename (string): filename of the target database
     RETURNS:
-        None
+        manufacturer_list (list): List of manufacturers.
     """
-    # Connect to SQLite database
-    conn = sqlite3.connect(database_filename)
-    cursor = conn.cursor()
     manufacturer_list = []
 
-    for i in range(0, 76):
-        vehicle_data = get_data("vehicle", i)  # get data for a single vehicle
+    for i in range(1, 76):
+        vehicle_data = get_vehicle_data("vehicle", i)  # get data for a single vehicle
 
         if vehicle_data:  # if getting data was successful
             # grab the manufacturer
             vehicle_manufacturer = vehicle_data.get("manufacturer")
-            if (
-                vehicle_manufacturer != "unknown"
-                and vehicle_manufacturer not in manufacturer_list
-            ):
-                manufacturer_list.append(vehicle_manufacturer)
+
+            # Split manufacturers if there are multiple (e.g., "Incom, Subpro")
+            if vehicle_manufacturer and vehicle_manufacturer != "unknown":
+                if vehicle_manufacturer not in manufacturer_list:
+                    manufacturer_list.append(vehicle_manufacturer)
+                    print(f"Found: {vehicle_manufacturer}")
+
     return manufacturer_list
 
 
