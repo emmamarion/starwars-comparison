@@ -106,31 +106,37 @@ def get_manufacturer_data(database_filename):
         manufacturer_list (list): List of manufacturers.
     """
     manufacturer_list = []
+    api_types = ["vehicle", "starship"]
 
-    for i in range(1, 76):
-        vehicle_data = get_vehicle_data("vehicle", i)  # get data for a single vehicle
+    # Iterate through the types
+    for search_type in api_types:
+        print(f"scanning {search_type}s")
 
-        # if getting data was successful
-        if vehicle_data:
+        # Iterate through IDs
+        for i in range(1, 77):
+            vehicle_data = get_vehicle_data(search_type, i)
 
-            # Grab the manufacturer
-            vehicle_manufacturer = vehicle_data.get("manufacturer")
+            # if getting data was successful
+            if vehicle_data:
 
-            # Check if the manufacturer exists and isn't "unknown"
-            if vehicle_manufacturer and vehicle_manufacturer != "unknown":
+                # Grab the manufacturer
+                vehicle_manufacturer = vehicle_data.get("manufacturer")
 
-                # Split the string by comma
-                # "Incom, Subpro" becomes ["Incom", " Subpro"]
-                split_names = vehicle_manufacturer.split(",")
+                # Check if the manufacturer exists and isn't "unknown"
+                if vehicle_manufacturer and vehicle_manufacturer != "unknown":
 
-                for name in split_names:
-                    # 2. Strip whitespace
-                    # " Subpro" becomes "Subpro"
-                    clean_name = name.strip()
+                    # Split the string by comma
+                    # "Incom, Subpro" becomes ["Incom", " Subpro"]
+                    split_names = vehicle_manufacturer.split(",")
 
-                    if clean_name not in manufacturer_list:
-                        manufacturer_list.append(clean_name)
-                        print(f"Found: {clean_name}")
+                    for name in split_names:
+                        # 2. Strip whitespace
+                        # " Subpro" becomes "Subpro"
+                        clean_name = name.strip()
+
+                        if clean_name not in manufacturer_list:
+                            manufacturer_list.append(clean_name)
+                            print(f"Found: {clean_name}")
 
     return manufacturer_list
 
@@ -153,7 +159,7 @@ def update_manufacturer_table(manufacturer_list, database_filename, limit=25):
 
     for name in manufacturer_list:
         # Check if limit has been hit
-        if newly_added_count > limit:
+        if newly_added_count >= limit:
             print(f"Limit of {limit} new entries reached. Stopping")
             break
 
