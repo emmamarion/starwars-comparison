@@ -99,7 +99,7 @@ def update_vehicle_table(data, database_filename):
 
 def get_manufacturer_data(database_filename):
     """
-    Iterates through vehicle IDs to find manufacturers.
+    Iterates through vehicle IDs to find manufacturers. Creates a cache for api data if it doesn't already exist.
 
     ARGUMENTS:
         database_filename (string): filename of the target database
