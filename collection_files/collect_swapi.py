@@ -154,12 +154,12 @@ def seed_vehicles(data_list, database_filename, limit=25):
     conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
 
-    added_count = 0
+    newly_added_count = 0
 
     print(f"\nScanning {len(data_list)} vehicles for insertion...")
 
     for item in data_list:
-        if added_count >= limit:
+        if newly_added_count >= limit:
             print(f"Limit of {limit} reached for VEHICLES.")
             break
 
@@ -186,8 +186,8 @@ def seed_vehicles(data_list, database_filename, limit=25):
             (item["id"], item["name"], item["length"], man_id),
         )
         print(f" + Added Vehicle: {item['name']}")
-        added_count += 1
+        newly_added_count += 1
 
     conn.commit()
     conn.close()
-    return added_count
+    return newly_added_count
