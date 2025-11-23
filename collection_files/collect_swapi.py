@@ -1,5 +1,7 @@
 import requests
 import sqlite3
+import json
+import os
 
 # NOTE:
 # There are 76 vehicles and 75 starships in swapi. We're treating them both as "vehicles"
@@ -104,6 +106,16 @@ def get_manufacturer_data(database_filename):
     RETURNS:
         manufacturer_list (list): List of manufacturers.
     """
+    cache_filename = "swapi_manufacturers.json"
+
+    # Check if cache exists
+    if os.path.exists(cache_filename):
+        print(f"Loading manufacturers from cache: {cache_filename}")
+        with open(cache_filename, "r") as f:
+            manufacturer_list = json.load(f)
+        return manufacturer_list
+
+    # If no cache, fetch from API
     manufacturer_list = []
     api_types = ["vehicle", "starship"]
 
@@ -137,6 +149,14 @@ def get_manufacturer_data(database_filename):
                             manufacturer_list.append(clean_name)
                             print(f"Found: {clean_name}")
 
+    # Save the result to a JSON file for next time
+    try:
+        with open(cache_filename, "w") as f:
+            json.dump(manufacturer_list, f)
+        print(f"Saved data to cache: {cache_filename}")
+    except IOError as e:
+        print(f"Warning: Could not save cache file: {e}")
+
     return manufacturer_list
 
 
@@ -162,17 +182,26 @@ def update_manufacturer_table(manufacturer_list, database_filename, limit=25):
             print(f"Limit of {limit} new entries reached. Stopping")
             break
 
-        # Try to insert
-        cursor.execute("INSERT OR IGNORE INTO manufacturers (name) VALUES (?)", (name,))
+        # Check if the manufacturer already exists
+        cursor.execute("SELECT id FROM manufacturers WHERE name = ?", (name,))
+        result = cursor.fetchone()
 
-        if cursor.rowcount > 0:
+        if not result:
+            # Insert the new manufacturer
+            cursor.execute("INSERT INTO manufacturers (name) VALUES (?)", (name,))
+            conn.commit()  # Commit immediately or at the end
+
             newly_added_count += 1
             print(f"Added new manufacturer: {name}")
 
     # Save changes
     conn.commit()
     conn.close()
-    print("Manufacturer table updated.")
+
+    if newly_added_count == 0:
+        print("NO NEW MANUFACTURERS WERE ADDED")
+    else:
+        print("Manufacturer table updated.")
 
 
 # For debugging
