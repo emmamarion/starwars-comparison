@@ -49,7 +49,7 @@ def fetch_and_cache_data():
             else "https://swapi.info/api/vehicles/"
         )
 
-        for i in range(i, max_id_range):
+        for i in range(1, max_id_range):
             try:
                 response = requests.get(base_url + str(i))
                 if response.status_code != 200:  # if the call was successful
