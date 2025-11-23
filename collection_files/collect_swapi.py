@@ -99,14 +99,21 @@ def update_vehicle_table(data, database_filename):
 
 def get_manufacturer_data(database_filename):
     """
-    Iterates through vehicle IDs to find manufacturers. Creates a cache for api data if it doesn't already exist.
+    Iterates through vehicle IDs to find manufacturers through API calls.
+    Creates a cache for the list of manufacturers if it doesn't already exist.
 
     ARGUMENTS:
         database_filename (string): filename of the target database
     RETURNS:
         manufacturer_list (list): List of manufacturers.
     """
+    manufacturer_list = []
+    api_types = ["vehicle", "starship"]
     cache_filename = "api_caches/swapi_manufacturers.json"
+
+    # The number of entries in each API type we will iterate through.
+    # Essentially: max_id_range * len(api_types) = max_api_calls
+    max_id_range = 80
 
     # These are fragments that appear after splitting eg "Company, Inc."
     skip_list = [
@@ -128,15 +135,13 @@ def get_manufacturer_data(database_filename):
         return manufacturer_list
 
     # If no cache, fetch from API
-    manufacturer_list = []
-    api_types = ["vehicle", "starship"]
 
     # Iterate through the types
     for search_type in api_types:
         print(f"scanning {search_type}s")
 
         # Iterate through IDs
-        for i in range(1, 80):
+        for i in range(1, max_id_range):
             vehicle_data = get_vehicle_data(search_type, i)
 
             # if getting data was successful
