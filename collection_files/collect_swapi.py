@@ -176,6 +176,10 @@ def get_manufacturer_data(database_filename):
                         if len(clean_name) < 2:
                             continue
 
+                        # Correct typo in api
+                        if clean_name == "Cyngus Spaceworks":
+                            clean_name = "Cygnus Spaceworks"
+
                         if clean_name not in manufacturer_list:
                             manufacturer_list.append(clean_name)
                             print(f"Found: {clean_name}")
