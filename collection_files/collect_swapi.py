@@ -2,6 +2,8 @@ import requests
 import sqlite3
 import json
 import os
+import cache
+
 
 # NOTE:
 # There are 76 vehicles and 75 starships in swapi. We're treating them both as "vehicles"
@@ -122,10 +124,8 @@ def get_manufacturer_data(database_filename):
     ]
 
     # Check if cache exists
-    if os.path.exists(cache_filename):
-        print(f"Loading manufacturers from cache: {cache_filename}")
-        with open(cache_filename, "r") as f:
-            manufacturer_list = json.load(f)
+    manufacturer_list = cache.load_cache(cache_filename)
+    if manufacturer_list:
         return manufacturer_list
 
     # If no cache, fetch from API
@@ -185,12 +185,7 @@ def get_manufacturer_data(database_filename):
                             print(f"Found: {clean_name}")
 
     # Save the result to a JSON file for next time
-    try:
-        with open(cache_filename, "w") as f:
-            json.dump(manufacturer_list, f)
-        print(f"Saved data to cache: {cache_filename}")
-    except IOError as e:
-        print(f"Warning: Could not save cache file: {e}")
+    cache.save_cache(manufacturer_list, cache_filename)
 
     return manufacturer_list
 
