@@ -1,7 +1,5 @@
 import requests
 import sqlite3
-import json
-import os
 import cache
 
 
@@ -108,7 +106,7 @@ def get_manufacturer_data(database_filename):
     RETURNS:
         manufacturer_list (list): List of manufacturers.
     """
-    cache_filename = "swapi_manufacturers.json"
+    cache_filename = "api_caches/swapi_manufacturers.json"
 
     # These are fragments that appear after splitting eg "Company, Inc."
     skip_list = [
@@ -125,6 +123,7 @@ def get_manufacturer_data(database_filename):
 
     # Check if cache exists
     manufacturer_list = cache.load_cache(cache_filename)
+    # If it already exists, return it and stop running this function
     if manufacturer_list:
         return manufacturer_list
 
@@ -176,7 +175,7 @@ def get_manufacturer_data(database_filename):
                         if len(clean_name) < 2:
                             continue
 
-                        # Correct typo in api
+                        # Correct a typo in api
                         if clean_name == "Cyngus Spaceworks":
                             clean_name = "Cygnus Spaceworks"
 
