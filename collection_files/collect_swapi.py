@@ -139,9 +139,13 @@ def get_manufacturer_data(database_filename):
                 # Check if the manufacturer exists and isn't "unknown"
                 if vehicle_manufacturer and vehicle_manufacturer != "unknown":
 
+                    # Replace slash with comma so it splits correctly
+                    # "Corp/Nubia" becomes "Corp,Nubia"
+                    normalized_string = vehicle_manufacturer.replace("/", ",")
+
                     # Split the string by comma
                     # "Incom, Subpro" becomes ["Incom", " Subpro"]
-                    split_names = vehicle_manufacturer.split(",")
+                    split_names = normalized_string.split(",")
 
                     for name in split_names:
                         # Time to give our data a little bath and clean it up!
