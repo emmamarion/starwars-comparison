@@ -109,7 +109,17 @@ def get_manufacturer_data(database_filename):
     cache_filename = "swapi_manufacturers.json"
 
     # These are fragments that appear after splitting eg "Company, Inc."
-    skip_list = ["inc", "inc.", "ltd", "ltd.", "corporation", "co.", "co", "unknown"]
+    skip_list = [
+        "inc",
+        "inc.",
+        "ltd",
+        "ltd.",
+        "corporation",
+        "incorporated",
+        "co.",
+        "co",
+        "unknown",
+    ]
 
     # Check if cache exists
     if os.path.exists(cache_filename):
@@ -150,6 +160,9 @@ def get_manufacturer_data(database_filename):
                     for name in split_names:
                         # Time to give our data a little bath and clean it up!
                         clean_name = name.strip()
+
+                        # Force Title Case (Fixes "corporation" vs "Corporation")
+                        clean_name = clean_name.title()
 
                         # Check if data empty
                         if not clean_name:
