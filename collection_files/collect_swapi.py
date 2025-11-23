@@ -15,106 +15,7 @@ import cache
 # "For at least one API you must have two tables that share an integer key" requirement.
 
 
-def get_vehicle_data(type="vehicle", request_id=1):
-    """
-    creates an API request to the swapi and retreieves information for a SINGLE entry
-
-    ARGUMENTS:
-        type (string): specifies the type of request, either "starship" or "vehicle"
-        request_id (int): the id of the vehicle
-    RETURNS:
-        data (dict): json dictionary of requested data
-    """
-
-    # Set the base url for the request depending on the type argument
-    base_url = (
-        "https://swapi.info/api/starships/"
-        if type.lower() == "starship"
-        else "https://swapi.info/api/vehicles/"
-    )
-
-    # Convert the request id to a string to append to url
-    vehicle_id_str = str(request_id)
-
-    # Make the API request
-    try:
-        request_url = base_url + vehicle_id_str
-        response = requests.get(request_url)
-
-        # Check if the request was actually successful
-        if response.status_code != 200:
-            # If ID doesn't exist, return None so the loop can skip it
-            return None
-
-        data = response.json()
-        return data
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching API data: {e}")
-        exit()
-
-
-def update_vehicle_table(data, database_filename):
-    """
-    Adds vehicle data for a SINGLE vehicle to the specified database in the "vehicles" table.
-
-    ARGUMENTS:
-        data (dict): json data for a vehicle
-        database_filename (string): filename of the target database
-    RETURNS:
-        None
-    """
-
-    # Connect to SQLite database
-    conn = sqlite3.connect(database_filename)
-    cursor = conn.cursor()
-
-    # ======= NAME =======
-    vehicle_name = data.get("name")
-
-    # ======= LENGTH =======
-    # Handle "unknown" and commas in numbers (e.g., "1,250")
-    raw_length = data.get("length", "0")
-
-    # Remove commas and check if it is a digit (handles "unknown")
-    clean_length = str(raw_length).replace(",", "")
-    if clean_length.replace(".", "", 1).isdigit():
-        vehicle_length = int(float(clean_length))
-
-    # ======= ID =======
-    # URLs look like: https://swapi.info/api/vehicles/4/
-    # Splitting by '/' and taking the second to last item
-    url_parts = data.get("url", "").split("/")
-    # Filter out empty strings to handle trailing slashes safely
-    url_parts = [p for p in url_parts if p]
-    vehicle_id = int(url_parts[-1])
-
-    # Uses INSERT OR IGNORE to prevent crashing if script is run twice
-    cursor.execute(
-        """INSERT OR IGNORE INTO vehicles (id, name, vehicle_length) VALUES (?, ?, ?)""",
-        (vehicle_id, vehicle_name, vehicle_length),
-    )
-    conn.commit()
-    conn.close()
-
-
-def get_manufacturer_data(database_filename):
-    """
-    Iterates through vehicle IDs to find manufacturers through API calls.
-    Creates a cache for the list of manufacturers if it doesn't already exist.
-
-    ARGUMENTS:
-        database_filename (string): filename of the target database
-    RETURNS:
-        manufacturer_list (list): List of manufacturers.
-    """
-    manufacturer_list = []
-    api_types = ["vehicle", "starship"]
-    cache_filename = "api_caches/swapi_manufacturers.json"
-
-    # The number of entries in each API type we will iterate through.
-    # Essentially: max_id_range * len(api_types) = max_api_calls
-    max_id_range = 80
-
+def fetch_and_cache_data():
     # These are fragments that appear after splitting eg "Company, Inc."
     skip_list = [
         "inc",
@@ -128,73 +29,83 @@ def get_manufacturer_data(database_filename):
         "unknown",
     ]
 
-    # Check if cache exists
-    manufacturer_list = cache.load_cache(cache_filename)
-    # If it already exists, return it and stop running this function
-    if manufacturer_list:
-        return manufacturer_list
+    cache_filename = "api_caches/swapi_full_data.json"
 
-    # If no cache, fetch from API
+    # Check if cache already exists
+    cached_data = cache.load_cache(cache_filename)
+    if cached_data:
+        print(f"Loaded {len(cached_data)} items from cache.")
+        return cached_data
 
-    # Iterate through the types
+    print("Fetching new data from API...")
+    all_items = []
+    api_types = ["vehicle", "starship"]
+    max_id_range = 80  # Adjust if you want more (there are ~75 of each)
+
     for search_type in api_types:
-        print(f"scanning {search_type}s")
+        base_url = (
+            "https://swapi.info/api/starships/"
+            if search_type == "starship"
+            else "https://swapi.info/api/vehicles/"
+        )
 
-        # Iterate through IDs
-        for i in range(1, max_id_range):
-            vehicle_data = get_vehicle_data(search_type, i)
+        for i in range(i, max_id_range):
+            try:
+                response = requests.get(base_url + str(i))
+                if response.status_code != 200:  # if the call was successful
+                    continue
 
-            # if getting data was successful
-            if vehicle_data:
+                raw_data = response.json()
 
-                # Grab the manufacturer
-                vehicle_manufacturer = vehicle_data.get("manufacturer")
+                # --- CLEANING DATA (Before Caching) ---
 
-                # Check if the manufacturer exists and isn't "unknown"
-                if vehicle_manufacturer and vehicle_manufacturer != "unknown":
+                # Clean ID
+                url_parts = raw_data.get("url", "").split("/")
+                clean_id = int([p for p in url_parts if p][-1])
 
+                # Clean Length
+                raw_length = raw_data.get("length", "0")
+                clean_length = str(raw_length).replace(",", "")
+                if clean_length.replace(".", "", 1).isdigit():
+                    final_length = int(float(clean_length))
+                else:
+                    final_length = 0
+
+                # Clean manufacturer
+                manufacturer_list = []
+                raw_man = raw_data.get("manufacturer", "")
+                if raw_man and raw_man != "unknown":
                     # Replace slash with comma so it splits correctly
-                    # "Corp/Nubia" becomes "Corp,Nubia"
-                    normalized_string = vehicle_manufacturer.replace("/", ",")
-
-                    # Split the string by comma
-                    # "Incom, Subpro" becomes ["Incom", " Subpro"]
-                    split_names = normalized_string.split(",")
+                    normalized = raw_man.replace("/", ",")
+                    split_names = normalized.split(",")
 
                     for name in split_names:
-                        # Time to give our data a little bath and clean it up!
-                        clean_name = name.strip()
+                        c_name = name.strip().title()
+                        if c_name.lower() not in skip_list and len(c_name) > 1:
+                            if c_name == "Cyngus Spaceworks":
+                                c_name = "Cygnus Spaceworks"
+                            manufacturer_list.append(c_name)
 
-                        # Force Title Case (Fixes "corporation" vs "Corporation")
-                        clean_name = clean_name.title()
+                clean_obj = {
+                    "id": clean_id,
+                    "name": raw_data.get("name"),
+                    "length": final_length,
+                    "manufacturers": manufacturer_list,  # List of strings
+                    "cost_in_credits": raw_data.get("cost_in_credits"),
+                }
 
-                        # Check if data empty
-                        if not clean_name:
-                            continue
+                all_items.append(clean_obj)
+                print(f"Fetched: {clean_obj['name']}")
 
-                        # Check if in skip list
-                        if clean_name.lower() in skip_list:
-                            continue
+            except Exception as e:
+                print(f"Error fetching ID {i}: {e}")
 
-                        # Check if it's too short
-                        if len(clean_name) < 2:
-                            continue
-
-                        # Correct a typo in api
-                        if clean_name == "Cyngus Spaceworks":
-                            clean_name = "Cygnus Spaceworks"
-
-                        if clean_name not in manufacturer_list:
-                            manufacturer_list.append(clean_name)
-                            print(f"Found: {clean_name}")
-
-    # Save the result to a JSON file for next time
-    cache.save_cache(manufacturer_list, cache_filename)
-
-    return manufacturer_list
+        # Save to cache
+        cache.save_cache(all_items, cache_filename)
+        return all_items
 
 
-def update_manufacturer_table(manufacturer_list, database_filename, limit=25):
+def seed_manufacturers(data_list, database_filename, limit=25):
     """
     Takes a list of manufacturer names and inserts them into the database.
     Ignores duplicates automatically.
@@ -210,38 +121,73 @@ def update_manufacturer_table(manufacturer_list, database_filename, limit=25):
     # Initalize variables
     newly_added_count = 0
 
-    for name in manufacturer_list:
-        # Check if limit has been hit
-        if newly_added_count >= limit:
-            print(f"Limit of {limit} new entries reached. Stopping")
-            break
+    print(f"\nScanning manufacturers for insertion (Limit: {limit})...")
 
-        # Check if the manufacturer already exists
-        cursor.execute("SELECT id FROM manufacturers WHERE name = ?", (name,))
-        result = cursor.fetchone()
+    for item in data_list:
+        for name in item["manufacturers"]:
+            # Check if limit has been hit for this run
+            if newly_added_count >= limit:
+                print(f"Limit of {limit} reached for MANUFACTURERS.")
+                break
 
-        if not result:
-            # Insert the new manufacturer
-            cursor.execute("INSERT INTO manufacturers (name) VALUES (?)", (name,))
-            conn.commit()  # Commit immediately or at the end
+            # Check if the manufacturer already exists
+            cursor.execute("SELECT id FROM manufacturers WHERE name = ?", (name,))
+            result = cursor.fetchone()
 
-            newly_added_count += 1
-            print(f"Added new manufacturer: {name}")
+            if not result:
+                # Insert the new manufacturer
+                cursor.execute("INSERT INTO manufacturers (name) VALUES (?)", (name,))
+                newly_added_count += 1
+                print(f"Added new manufacturer: {name}")
 
     # Save changes
     conn.commit()
     conn.close()
 
     if newly_added_count == 0:
-        print("NO NEW MANUFACTURERS WERE ADDED")
+        print("No new manufacturers added (they might all be in the DB already).")
     else:
-        print("Manufacturer table updated.")
+        print(f"{newly_added_count} manufacturers added.")
 
 
-# For debugging
-def test():
-    print(get_manufacturer_data("starwars.db"))
+def seed_vehicles(data_list, database_filename, limit=25):
+    conn = sqlite3.connect(database_filename)
+    cursor = conn.cursor()
 
+    added_count = 0
 
-if __name__ == "__main__":
-    test()
+    print(f"\nScanning {len(data_list)} vehicles for insertion...")
+
+    for item in data_list:
+        if added_count >= limit:
+            print(f"Limit of {limit} reached for VEHICLES.")
+            break
+
+        # Check if vehicle already exists
+        cursor.execute("SELECT id FROM vehicles WHERE id = ?", (item["id"],))
+        if cursor.fetchone():
+            continue  # Skip if exists
+
+        # Find Manufacturer ID
+        # (Take the first one in the list as the primary manufacturer)
+        man_id = None
+        if item["manufacturers"]:
+            primary_man_name = item["manufacturers"][0]
+            cursor.execute(
+                "SELECT id FROM manufacturers WHERE name = ?", (primary_man_name,)
+            )
+            res = cursor.fetchone()
+            if res:
+                man_id = res[0]
+
+        # Insert
+        cursor.execute(
+            "INSERT INTO vehicles (id, name, length, manufacturer_id) VALUES (?, ?, ?, ?)",
+            (item["id"], item["name"], item["length"], man_id),
+        )
+        print(f" + Added Vehicle: {item['name']}")
+        added_count += 1
+
+    conn.commit()
+    conn.close()
+    return added_count
