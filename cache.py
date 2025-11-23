@@ -42,7 +42,7 @@ def save_cache(data, filename):
     if extension == ".json":
         try:
             with open(filename, "w") as file:
-                json.dump(data, file)
+                json.dump(data, file, indent=4)
                 print(f"Saved data to cache: {filename}")
         except IOError as e:
             print(f"WARNING Could not save cache file: {e}")
