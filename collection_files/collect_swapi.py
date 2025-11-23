@@ -108,6 +108,9 @@ def get_manufacturer_data(database_filename):
     """
     cache_filename = "swapi_manufacturers.json"
 
+    # These are fragments that appear after splitting "Company, Inc."
+    skip_list = ["inc", "inc.", "ltd", "ltd.", "corporation", "co.", "co", "unknown"]
+
     # Check if cache exists
     if os.path.exists(cache_filename):
         print(f"Loading manufacturers from cache: {cache_filename}")
@@ -124,7 +127,7 @@ def get_manufacturer_data(database_filename):
         print(f"scanning {search_type}s")
 
         # Iterate through IDs
-        for i in range(1, 77):
+        for i in range(1, 80):
             vehicle_data = get_vehicle_data(search_type, i)
 
             # if getting data was successful
@@ -141,9 +144,20 @@ def get_manufacturer_data(database_filename):
                     split_names = vehicle_manufacturer.split(",")
 
                     for name in split_names:
-                        # 2. Strip whitespace
-                        # " Subpro" becomes "Subpro"
+                        # Time to give our data a little bath and clean it up!
                         clean_name = name.strip()
+
+                        # Check if data empty
+                        if not clean_name:
+                            continue
+
+                        # Check if in skip list
+                        if clean_name in skip_list:
+                            continue
+
+                        # Check if it's too short
+                        if len(clean_name) < 2:
+                            continue
 
                         if clean_name not in manufacturer_list:
                             manufacturer_list.append(clean_name)
