@@ -1,5 +1,20 @@
+import requests
+import sqlite3
+
+API_KEY = ""
+
+
+def collect_omdb_data():
+    pass
+
+
+def insert_into_database(limit=25):
+    pass
+
+
+# For debugging:
 def test():
-    print("hi")
+    pass
 
 
 if __name__ == "__main__":
