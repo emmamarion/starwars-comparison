@@ -88,6 +88,7 @@ def fetch_and_cache_data():
 
                 clean_obj = {
                     "id": clean_id,
+                    "category": search_type,
                     "name": raw_data.get("name"),
                     "length": final_length,
                     "manufacturers": manufacturer_list,  # List of strings
@@ -100,9 +101,9 @@ def fetch_and_cache_data():
             except Exception as e:
                 print(f"Error fetching ID {i}: {e}")
 
-        # Save to cache
-        cache.save_cache(all_items, cache_filename)
-        return all_items
+    # Save to cache
+    cache.save_cache(all_items, cache_filename)
+    return all_items
 
 
 def seed_manufacturers(data_list, database_filename, limit=25):
@@ -124,6 +125,9 @@ def seed_manufacturers(data_list, database_filename, limit=25):
     print(f"\nScanning manufacturers for insertion (Limit: {limit})...")
 
     for item in data_list:
+        if newly_added_count >= limit:
+            print(f"Limit of {limit} reached for MANUFACTURERS.")
+            break
         for name in item["manufacturers"]:
             # Check if limit has been hit for this run
             if newly_added_count >= limit:
@@ -182,11 +186,16 @@ def seed_vehicles(data_list, database_filename, limit=25):
 
         # Insert
         cursor.execute(
-            "INSERT INTO vehicles (id, name, length, manufacturer_id) VALUES (?, ?, ?, ?)",
+            "INSERT INTO vehicles (swapi_id, name, length, manufacturer_id) VALUES (?, ?, ?, ?)",
             (item["id"], item["name"], item["length"], man_id),
         )
         print(f" + Added Vehicle: {item['name']}")
         newly_added_count += 1
+
+    if newly_added_count == 0:
+        print("No new vehicles added (they might all be in the DB already).")
+    else:
+        print(f"{newly_added_count} vehicles added.")
 
     conn.commit()
     conn.close()

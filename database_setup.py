@@ -25,7 +25,9 @@ def database_setup(filename):
     # Table 2: SWAPI vehicle data (Child table)
     table_2 = """
         CREATE TABLE IF NOT EXISTS vehicles (
-            id INTEGER PRIMARY KEY,
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            swapi_id INTEGER,
+            category TEXT,
             name TEXT,
             length INTEGER, 
             cost_in_credits INTEGER,

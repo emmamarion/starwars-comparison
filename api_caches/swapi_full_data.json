@@ -1,1 +1,767 @@
-[{"id": 4, "name": "Sand Crawler", "length": 0, "manufacturers": ["Corellia Mining Corporation"], "cost_in_credits": "150000"}, {"id": 6, "name": "T-16 skyhopper", "length": 0, "manufacturers": ["Incom Corporation"], "cost_in_credits": "14500"}, {"id": 7, "name": "X-34 landspeeder", "length": 0, "manufacturers": ["Sorosuub Corporation"], "cost_in_credits": "10550"}, {"id": 8, "name": "TIE/LN starfighter", "length": 6, "manufacturers": ["Sienar Fleet Systems"], "cost_in_credits": "unknown"}, {"id": 14, "name": "Snowspeeder", "length": 4, "manufacturers": ["Incom Corporation"], "cost_in_credits": "unknown"}, {"id": 16, "name": "TIE bomber", "length": 7, "manufacturers": ["Sienar Fleet Systems"], "cost_in_credits": "unknown"}, {"id": 18, "name": "AT-AT", "length": 20, "manufacturers": ["Kuat Drive Yards", "Imperial Department Of Military Research"], "cost_in_credits": "unknown"}, {"id": 19, "name": "AT-ST", "length": 2, "manufacturers": ["Kuat Drive Yards", "Imperial Department Of Military Research"], "cost_in_credits": "unknown"}, {"id": 20, "name": "Storm IV Twin-Pod cloud car", "length": 7, "manufacturers": ["Bespin Motors"], "cost_in_credits": "75000"}, {"id": 24, "name": "Sail barge", "length": 30, "manufacturers": ["Ubrikkian Industries Custom Vehicle Division"], "cost_in_credits": "285000"}, {"id": 25, "name": "Bantha-II cargo skiff", "length": 9, "manufacturers": ["Ubrikkian Industries"], "cost_in_credits": "8000"}, {"id": 26, "name": "TIE/IN interceptor", "length": 9, "manufacturers": ["Sienar Fleet Systems"], "cost_in_credits": "unknown"}, {"id": 30, "name": "Imperial Speeder Bike", "length": 3, "manufacturers": ["Aratech Repulsor Company"], "cost_in_credits": "8000"}, {"id": 33, "name": "Vulture Droid", "length": 3, "manufacturers": ["Haor Chall Engineering", "Baktoid Armor Workshop"], "cost_in_credits": "unknown"}, {"id": 34, "name": "Multi-Troop Transport", "length": 31, "manufacturers": ["Baktoid Armor Workshop"], "cost_in_credits": "138000"}, {"id": 35, "name": "Armored Assault Tank", "length": 9, "manufacturers": ["Baktoid Armor Workshop"], "cost_in_credits": "unknown"}, {"id": 36, "name": "Single Trooper Aerial Platform", "length": 2, "manufacturers": ["Baktoid Armor Workshop"], "cost_in_credits": "2500"}, {"id": 37, "name": "C-9979 landing craft", "length": 210, "manufacturers": ["Haor Chall Engineering"], "cost_in_credits": "200000"}, {"id": 38, "name": "Tribubble bongo", "length": 15, "manufacturers": ["Otoh Gunga Bongameken Cooperative"], "cost_in_credits": "unknown"}, {"id": 42, "name": "Sith speeder", "length": 1, "manufacturers": ["Razalon"], "cost_in_credits": "4000"}, {"id": 44, "name": "Zephyr-G swoop bike", "length": 3, "manufacturers": ["Mobquet Swoops And Speeders"], "cost_in_credits": "5750"}, {"id": 45, "name": "Koro-2 Exodrive airspeeder", "length": 6, "manufacturers": ["Desler Gizh Outworld Mobility Corporation"], "cost_in_credits": "unknown"}, {"id": 46, "name": "XJ-6 airspeeder", "length": 6, "manufacturers": ["Narglatch Airtech Prefabricated Kit"], "cost_in_credits": "unknown"}, {"id": 50, "name": "LAAT/i", "length": 17, "manufacturers": ["Rothana Heavy Engineering"], "cost_in_credits": "unknown"}, {"id": 51, "name": "LAAT/c", "length": 28, "manufacturers": ["Rothana Heavy Engineering"], "cost_in_credits": "unknown"}, {"id": 53, "name": "AT-TE", "length": 13, "manufacturers": ["Rothana Heavy Engineering", "Kuat Drive Yards"], "cost_in_credits": "unknown"}, {"id": 54, "name": "SPHA", "length": 140, "manufacturers": ["Rothana Heavy Engineering"], "cost_in_credits": "unknown"}, {"id": 55, "name": "Flitknot speeder", "length": 2, "manufacturers": ["Huppla Pasa Tisc Shipwrights Collective"], "cost_in_credits": "8000"}, {"id": 56, "name": "Neimoidian shuttle", "length": 20, "manufacturers": ["Haor Chall Engineering"], "cost_in_credits": "unknown"}, {"id": 57, "name": "Geonosian starfighter", "length": 9, "manufacturers": ["Huppla Pasa Tisc Shipwrights Collective"], "cost_in_credits": "unknown"}, {"id": 60, "name": "Tsmeu-6 personal wheel bike", "length": 3, "manufacturers": ["Z-Gomot Ternbuell Guppat Corporation"], "cost_in_credits": "15000"}, {"id": 62, "name": "Emergency Firespeeder", "length": 0, "manufacturers": [], "cost_in_credits": "unknown"}, {"id": 67, "name": "Droid tri-fighter", "length": 5, "manufacturers": ["Colla Designs", "Phlac-Arphocc Automata Industries"], "cost_in_credits": "20000"}, {"id": 69, "name": "Oevvaor jet catamaran", "length": 15, "manufacturers": ["Appazanna Engineering Works"], "cost_in_credits": "12125"}, {"id": 70, "name": "Raddaugh Gnasp fluttercraft", "length": 7, "manufacturers": ["Appazanna Engineering Works"], "cost_in_credits": "14750"}, {"id": 71, "name": "Clone turbo tank", "length": 49, "manufacturers": ["Kuat Drive Yards"], "cost_in_credits": "350000"}, {"id": 72, "name": "Corporate Alliance tank droid", "length": 10, "manufacturers": ["Techno Union"], "cost_in_credits": "49000"}, {"id": 73, "name": "Droid gunship", "length": 12, "manufacturers": ["Baktoid Fleet Ordnance", "Haor Chall Engineering"], "cost_in_credits": "60000"}, {"id": 76, "name": "AT-RT", "length": 3, "manufacturers": ["Kuat Drive Yards"], "cost_in_credits": "40000"}]
+[
+    {
+        "id": 4,
+        "category": "vehicle",
+        "name": "Sand Crawler",
+        "length": 0,
+        "manufacturers": [
+            "Corellia Mining Corporation"
+        ],
+        "cost_in_credits": "150000"
+    },
+    {
+        "id": 6,
+        "category": "vehicle",
+        "name": "T-16 skyhopper",
+        "length": 0,
+        "manufacturers": [
+            "Incom Corporation"
+        ],
+        "cost_in_credits": "14500"
+    },
+    {
+        "id": 7,
+        "category": "vehicle",
+        "name": "X-34 landspeeder",
+        "length": 0,
+        "manufacturers": [
+            "Sorosuub Corporation"
+        ],
+        "cost_in_credits": "10550"
+    },
+    {
+        "id": 8,
+        "category": "vehicle",
+        "name": "TIE/LN starfighter",
+        "length": 6,
+        "manufacturers": [
+            "Sienar Fleet Systems"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 14,
+        "category": "vehicle",
+        "name": "Snowspeeder",
+        "length": 4,
+        "manufacturers": [
+            "Incom Corporation"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 16,
+        "category": "vehicle",
+        "name": "TIE bomber",
+        "length": 7,
+        "manufacturers": [
+            "Sienar Fleet Systems"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 18,
+        "category": "vehicle",
+        "name": "AT-AT",
+        "length": 20,
+        "manufacturers": [
+            "Kuat Drive Yards",
+            "Imperial Department Of Military Research"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 19,
+        "category": "vehicle",
+        "name": "AT-ST",
+        "length": 2,
+        "manufacturers": [
+            "Kuat Drive Yards",
+            "Imperial Department Of Military Research"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 20,
+        "category": "vehicle",
+        "name": "Storm IV Twin-Pod cloud car",
+        "length": 7,
+        "manufacturers": [
+            "Bespin Motors"
+        ],
+        "cost_in_credits": "75000"
+    },
+    {
+        "id": 24,
+        "category": "vehicle",
+        "name": "Sail barge",
+        "length": 30,
+        "manufacturers": [
+            "Ubrikkian Industries Custom Vehicle Division"
+        ],
+        "cost_in_credits": "285000"
+    },
+    {
+        "id": 25,
+        "category": "vehicle",
+        "name": "Bantha-II cargo skiff",
+        "length": 9,
+        "manufacturers": [
+            "Ubrikkian Industries"
+        ],
+        "cost_in_credits": "8000"
+    },
+    {
+        "id": 26,
+        "category": "vehicle",
+        "name": "TIE/IN interceptor",
+        "length": 9,
+        "manufacturers": [
+            "Sienar Fleet Systems"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 30,
+        "category": "vehicle",
+        "name": "Imperial Speeder Bike",
+        "length": 3,
+        "manufacturers": [
+            "Aratech Repulsor Company"
+        ],
+        "cost_in_credits": "8000"
+    },
+    {
+        "id": 33,
+        "category": "vehicle",
+        "name": "Vulture Droid",
+        "length": 3,
+        "manufacturers": [
+            "Haor Chall Engineering",
+            "Baktoid Armor Workshop"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 34,
+        "category": "vehicle",
+        "name": "Multi-Troop Transport",
+        "length": 31,
+        "manufacturers": [
+            "Baktoid Armor Workshop"
+        ],
+        "cost_in_credits": "138000"
+    },
+    {
+        "id": 35,
+        "category": "vehicle",
+        "name": "Armored Assault Tank",
+        "length": 9,
+        "manufacturers": [
+            "Baktoid Armor Workshop"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 36,
+        "category": "vehicle",
+        "name": "Single Trooper Aerial Platform",
+        "length": 2,
+        "manufacturers": [
+            "Baktoid Armor Workshop"
+        ],
+        "cost_in_credits": "2500"
+    },
+    {
+        "id": 37,
+        "category": "vehicle",
+        "name": "C-9979 landing craft",
+        "length": 210,
+        "manufacturers": [
+            "Haor Chall Engineering"
+        ],
+        "cost_in_credits": "200000"
+    },
+    {
+        "id": 38,
+        "category": "vehicle",
+        "name": "Tribubble bongo",
+        "length": 15,
+        "manufacturers": [
+            "Otoh Gunga Bongameken Cooperative"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 42,
+        "category": "vehicle",
+        "name": "Sith speeder",
+        "length": 1,
+        "manufacturers": [
+            "Razalon"
+        ],
+        "cost_in_credits": "4000"
+    },
+    {
+        "id": 44,
+        "category": "vehicle",
+        "name": "Zephyr-G swoop bike",
+        "length": 3,
+        "manufacturers": [
+            "Mobquet Swoops And Speeders"
+        ],
+        "cost_in_credits": "5750"
+    },
+    {
+        "id": 45,
+        "category": "vehicle",
+        "name": "Koro-2 Exodrive airspeeder",
+        "length": 6,
+        "manufacturers": [
+            "Desler Gizh Outworld Mobility Corporation"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 46,
+        "category": "vehicle",
+        "name": "XJ-6 airspeeder",
+        "length": 6,
+        "manufacturers": [
+            "Narglatch Airtech Prefabricated Kit"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 50,
+        "category": "vehicle",
+        "name": "LAAT/i",
+        "length": 17,
+        "manufacturers": [
+            "Rothana Heavy Engineering"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 51,
+        "category": "vehicle",
+        "name": "LAAT/c",
+        "length": 28,
+        "manufacturers": [
+            "Rothana Heavy Engineering"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 53,
+        "category": "vehicle",
+        "name": "AT-TE",
+        "length": 13,
+        "manufacturers": [
+            "Rothana Heavy Engineering",
+            "Kuat Drive Yards"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 54,
+        "category": "vehicle",
+        "name": "SPHA",
+        "length": 140,
+        "manufacturers": [
+            "Rothana Heavy Engineering"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 55,
+        "category": "vehicle",
+        "name": "Flitknot speeder",
+        "length": 2,
+        "manufacturers": [
+            "Huppla Pasa Tisc Shipwrights Collective"
+        ],
+        "cost_in_credits": "8000"
+    },
+    {
+        "id": 56,
+        "category": "vehicle",
+        "name": "Neimoidian shuttle",
+        "length": 20,
+        "manufacturers": [
+            "Haor Chall Engineering"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 57,
+        "category": "vehicle",
+        "name": "Geonosian starfighter",
+        "length": 9,
+        "manufacturers": [
+            "Huppla Pasa Tisc Shipwrights Collective"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 60,
+        "category": "vehicle",
+        "name": "Tsmeu-6 personal wheel bike",
+        "length": 3,
+        "manufacturers": [
+            "Z-Gomot Ternbuell Guppat Corporation"
+        ],
+        "cost_in_credits": "15000"
+    },
+    {
+        "id": 62,
+        "category": "vehicle",
+        "name": "Emergency Firespeeder",
+        "length": 0,
+        "manufacturers": [],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 67,
+        "category": "vehicle",
+        "name": "Droid tri-fighter",
+        "length": 5,
+        "manufacturers": [
+            "Colla Designs",
+            "Phlac-Arphocc Automata Industries"
+        ],
+        "cost_in_credits": "20000"
+    },
+    {
+        "id": 69,
+        "category": "vehicle",
+        "name": "Oevvaor jet catamaran",
+        "length": 15,
+        "manufacturers": [
+            "Appazanna Engineering Works"
+        ],
+        "cost_in_credits": "12125"
+    },
+    {
+        "id": 70,
+        "category": "vehicle",
+        "name": "Raddaugh Gnasp fluttercraft",
+        "length": 7,
+        "manufacturers": [
+            "Appazanna Engineering Works"
+        ],
+        "cost_in_credits": "14750"
+    },
+    {
+        "id": 71,
+        "category": "vehicle",
+        "name": "Clone turbo tank",
+        "length": 49,
+        "manufacturers": [
+            "Kuat Drive Yards"
+        ],
+        "cost_in_credits": "350000"
+    },
+    {
+        "id": 72,
+        "category": "vehicle",
+        "name": "Corporate Alliance tank droid",
+        "length": 10,
+        "manufacturers": [
+            "Techno Union"
+        ],
+        "cost_in_credits": "49000"
+    },
+    {
+        "id": 73,
+        "category": "vehicle",
+        "name": "Droid gunship",
+        "length": 12,
+        "manufacturers": [
+            "Baktoid Fleet Ordnance",
+            "Haor Chall Engineering"
+        ],
+        "cost_in_credits": "60000"
+    },
+    {
+        "id": 76,
+        "category": "vehicle",
+        "name": "AT-RT",
+        "length": 3,
+        "manufacturers": [
+            "Kuat Drive Yards"
+        ],
+        "cost_in_credits": "40000"
+    },
+    {
+        "id": 2,
+        "category": "starship",
+        "name": "CR90 corvette",
+        "length": 150,
+        "manufacturers": [
+            "Corellian Engineering Corporation"
+        ],
+        "cost_in_credits": "3500000"
+    },
+    {
+        "id": 3,
+        "category": "starship",
+        "name": "Star Destroyer",
+        "length": 1600,
+        "manufacturers": [
+            "Kuat Drive Yards"
+        ],
+        "cost_in_credits": "150000000"
+    },
+    {
+        "id": 5,
+        "category": "starship",
+        "name": "Sentinel-class landing craft",
+        "length": 38,
+        "manufacturers": [
+            "Sienar Fleet Systems",
+            "Cygnus Spaceworks"
+        ],
+        "cost_in_credits": "240000"
+    },
+    {
+        "id": 9,
+        "category": "starship",
+        "name": "Death Star",
+        "length": 120000,
+        "manufacturers": [
+            "Imperial Department Of Military Research",
+            "Sienar Fleet Systems"
+        ],
+        "cost_in_credits": "1000000000000"
+    },
+    {
+        "id": 10,
+        "category": "starship",
+        "name": "Millennium Falcon",
+        "length": 34,
+        "manufacturers": [
+            "Corellian Engineering Corporation"
+        ],
+        "cost_in_credits": "100000"
+    },
+    {
+        "id": 11,
+        "category": "starship",
+        "name": "Y-wing",
+        "length": 14,
+        "manufacturers": [
+            "Koensayr Manufacturing"
+        ],
+        "cost_in_credits": "134999"
+    },
+    {
+        "id": 12,
+        "category": "starship",
+        "name": "X-wing",
+        "length": 12,
+        "manufacturers": [
+            "Incom Corporation"
+        ],
+        "cost_in_credits": "149999"
+    },
+    {
+        "id": 13,
+        "category": "starship",
+        "name": "TIE Advanced x1",
+        "length": 9,
+        "manufacturers": [
+            "Sienar Fleet Systems"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 15,
+        "category": "starship",
+        "name": "Executor",
+        "length": 19000,
+        "manufacturers": [
+            "Kuat Drive Yards",
+            "Fondor Shipyards"
+        ],
+        "cost_in_credits": "1143350000"
+    },
+    {
+        "id": 17,
+        "category": "starship",
+        "name": "Rebel transport",
+        "length": 90,
+        "manufacturers": [
+            "Gallofree Yards"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 21,
+        "category": "starship",
+        "name": "Slave 1",
+        "length": 21,
+        "manufacturers": [
+            "Kuat Systems Engineering"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 22,
+        "category": "starship",
+        "name": "Imperial shuttle",
+        "length": 20,
+        "manufacturers": [
+            "Sienar Fleet Systems"
+        ],
+        "cost_in_credits": "240000"
+    },
+    {
+        "id": 23,
+        "category": "starship",
+        "name": "EF76 Nebulon-B escort frigate",
+        "length": 300,
+        "manufacturers": [
+            "Kuat Drive Yards"
+        ],
+        "cost_in_credits": "8500000"
+    },
+    {
+        "id": 27,
+        "category": "starship",
+        "name": "Calamari Cruiser",
+        "length": 1200,
+        "manufacturers": [
+            "Mon Calamari Shipyards"
+        ],
+        "cost_in_credits": "104000000"
+    },
+    {
+        "id": 28,
+        "category": "starship",
+        "name": "A-wing",
+        "length": 9,
+        "manufacturers": [
+            "Alliance Underground Engineering",
+            "Incom Corporation"
+        ],
+        "cost_in_credits": "175000"
+    },
+    {
+        "id": 29,
+        "category": "starship",
+        "name": "B-wing",
+        "length": 16,
+        "manufacturers": [
+            "Slayn & Korpil"
+        ],
+        "cost_in_credits": "220000"
+    },
+    {
+        "id": 31,
+        "category": "starship",
+        "name": "Republic Cruiser",
+        "length": 115,
+        "manufacturers": [
+            "Corellian Engineering Corporation"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 32,
+        "category": "starship",
+        "name": "Droid control ship",
+        "length": 3170,
+        "manufacturers": [
+            "Hoersch-Kessel Drive"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 39,
+        "category": "starship",
+        "name": "Naboo fighter",
+        "length": 11,
+        "manufacturers": [
+            "Theed Palace Space Vessel Engineering Corps"
+        ],
+        "cost_in_credits": "200000"
+    },
+    {
+        "id": 40,
+        "category": "starship",
+        "name": "Naboo Royal Starship",
+        "length": 76,
+        "manufacturers": [
+            "Theed Palace Space Vessel Engineering Corps",
+            "Nubia Star Drives"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 41,
+        "category": "starship",
+        "name": "Scimitar",
+        "length": 26,
+        "manufacturers": [
+            "Republic Sienar Systems"
+        ],
+        "cost_in_credits": "55000000"
+    },
+    {
+        "id": 43,
+        "category": "starship",
+        "name": "J-type diplomatic barge",
+        "length": 39,
+        "manufacturers": [
+            "Theed Palace Space Vessel Engineering Corps",
+            "Nubia Star Drives"
+        ],
+        "cost_in_credits": "2000000"
+    },
+    {
+        "id": 47,
+        "category": "starship",
+        "name": "AA-9 Coruscant freighter",
+        "length": 390,
+        "manufacturers": [
+            "Botajef Shipyards"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 48,
+        "category": "starship",
+        "name": "Jedi starfighter",
+        "length": 8,
+        "manufacturers": [
+            "Kuat Systems Engineering"
+        ],
+        "cost_in_credits": "180000"
+    },
+    {
+        "id": 49,
+        "category": "starship",
+        "name": "H-type Nubian yacht",
+        "length": 47,
+        "manufacturers": [
+            "Theed Palace Space Vessel Engineering Corps"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 52,
+        "category": "starship",
+        "name": "Republic Assault ship",
+        "length": 752,
+        "manufacturers": [
+            "Rothana Heavy Engineering"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 58,
+        "category": "starship",
+        "name": "Solar Sailer",
+        "length": 15,
+        "manufacturers": [
+            "Huppla Pasa Tisc Shipwrights Collective"
+        ],
+        "cost_in_credits": "35700"
+    },
+    {
+        "id": 59,
+        "category": "starship",
+        "name": "Trade Federation cruiser",
+        "length": 1088,
+        "manufacturers": [
+            "Rendili Stardrive",
+            "Free Dac Volunteers Engineering Corps."
+        ],
+        "cost_in_credits": "125000000"
+    },
+    {
+        "id": 61,
+        "category": "starship",
+        "name": "Theta-class T-2c shuttle",
+        "length": 18,
+        "manufacturers": [
+            "Cygnus Spaceworks"
+        ],
+        "cost_in_credits": "1000000"
+    },
+    {
+        "id": 63,
+        "category": "starship",
+        "name": "Republic attack cruiser",
+        "length": 1137,
+        "manufacturers": [
+            "Kuat Drive Yards",
+            "Allanteen Six Shipyards"
+        ],
+        "cost_in_credits": "59000000"
+    },
+    {
+        "id": 64,
+        "category": "starship",
+        "name": "Naboo star skiff",
+        "length": 29,
+        "manufacturers": [
+            "Theed Palace Space Vessel Engineering Corps",
+            "Nubia Star Drives"
+        ],
+        "cost_in_credits": "unknown"
+    },
+    {
+        "id": 65,
+        "category": "starship",
+        "name": "Jedi Interceptor",
+        "length": 5,
+        "manufacturers": [
+            "Kuat Systems Engineering"
+        ],
+        "cost_in_credits": "320000"
+    },
+    {
+        "id": 66,
+        "category": "starship",
+        "name": "arc-170",
+        "length": 14,
+        "manufacturers": [
+            "Incom Corporation",
+            "Subpro Corporation"
+        ],
+        "cost_in_credits": "155000"
+    },
+    {
+        "id": 68,
+        "category": "starship",
+        "name": "Banking clan frigte",
+        "length": 825,
+        "manufacturers": [
+            "Hoersch-Kessel Drive",
+            "Gwori Revolutionary Industries"
+        ],
+        "cost_in_credits": "57000000"
+    },
+    {
+        "id": 74,
+        "category": "starship",
+        "name": "Belbullab-22 starfighter",
+        "length": 6,
+        "manufacturers": [
+            "Feethan Ottraw Scalable Assemblies"
+        ],
+        "cost_in_credits": "168000"
+    },
+    {
+        "id": 75,
+        "category": "starship",
+        "name": "V-wing",
+        "length": 7,
+        "manufacturers": [
+            "Kuat Systems Engineering"
+        ],
+        "cost_in_credits": "102500"
+    }
+]
