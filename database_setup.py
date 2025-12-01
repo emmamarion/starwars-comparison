@@ -19,7 +19,7 @@ def database_setup(filename):
         CREATE TABLE IF NOT EXISTS comics (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT UNIQUE,
-            release_date TEXT
+            release_date INTEGER
         )
     """
     # Parent tables
