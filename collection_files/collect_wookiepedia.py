@@ -26,7 +26,7 @@ def collect_comics():
         exit()
 
 
-def scrape(html_content, limit=25):
+def scrape(html_content, database_filename="starwars.db", limit=25):
     """
     Scrapes Star Wars comic data from an HTML page, extracts the title and release
     year, and inserts them into the 'comics' table in the SQLite database.
@@ -38,6 +38,7 @@ def scrape(html_content, limit=25):
 
     Args:
         html_content (str): The raw HTML content from the Wookieepedia timeline page.
+        database_filename (str): The string of the database filename.
         limit (int, optional): The maximum number of new comic rows to add during this function call. Defaults to 25.
 
     Returns:
@@ -46,7 +47,7 @@ def scrape(html_content, limit=25):
     soup = BeautifulSoup(html_content, "html.parser")
     comic_table_rows = soup.find_all("tr", class_="comic")
 
-    conn = sqlite3.connect("starwars.db")
+    conn = sqlite3.connect(database_filename)
     cursor = conn.cursor()
     rows_added = 0
 
@@ -88,7 +89,6 @@ def scrape(html_content, limit=25):
 def main():
     html_content = collect_comics()
     total_added = scrape(html_content)
-    print(f"Job complete. Total new comics added: {total_added}")
 
 
 if __name__ == "__main__":
