@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import requests
-import re
 import sqlite3
 
 
@@ -41,6 +40,7 @@ def scrape(html_content, limit=25):
             unordered_list.decompose()
 
         title = title_cell.get_text(strip=True)
+        title = title.strip("†")
 
         date_text = cells[3].get_text(strip=True)
 
