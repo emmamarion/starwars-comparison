@@ -8,6 +8,7 @@ def calculate_comics_per_year(db_filename="starwars.db"):
     query = """
     SELECT release_date, COUNT(*)
     FROM comics
+    WHERE release_date != '' AND release_date IS NOT NULL
     GROUP BY release_date
     ORDER BY release_date ASC
     """
