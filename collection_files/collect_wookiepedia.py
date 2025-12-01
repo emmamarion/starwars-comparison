@@ -5,9 +5,16 @@ import sqlite3
 
 def collect_comics():
     """
+    Fetches the raw HTML content from the Wookieepedia timeline page using a GET request.
 
-    RETURNS:
-        html_content
+    The function includes error handling: it raises an exception for bad HTTP
+    status codes (4xx, 5xx) and exits the program if a network error occurs.
+
+    Args:
+        None
+
+    Returns:
+        str: The raw HTML content of the Wookieepedia 'Timeline of canon media' page.
     """
     url = "https://starwars.fandom.com/wiki/Timeline_of_canon_media"
     try:
@@ -20,6 +27,22 @@ def collect_comics():
 
 
 def scrape(html_content, limit=25):
+    """
+    Scrapes Star Wars comic data from an HTML page, extracts the title and release
+    year, and inserts them into the 'comics' table in the SQLite database.
+
+    The function limits the total number of new items added to prevent exceeding
+    the project's 25-item-per-run limit.
+    It also handles duplicate entries by skipping comics whose title already exists
+    in the database.
+
+    Args:
+        html_content (str): The raw HTML content from the Wookieepedia timeline page.
+        limit (int, optional): The maximum number of new comic rows to add during this function call. Defaults to 25.
+
+    Returns:
+        int: The number of new comic rows successfully added to the database.
+    """
     soup = BeautifulSoup(html_content, "html.parser")
     comic_table_rows = soup.find_all("tr", class_="comic")
 
@@ -42,12 +65,14 @@ def scrape(html_content, limit=25):
         title = title_cell.get_text(strip=True)
         title = title.strip("†")
 
+        # Change date to year to avoid duplicate string data
         date_text = cells[3].get_text(strip=True)
+        year = date_text[:4]
 
         try:
             cursor.execute(
                 "INSERT INTO comics (title, release_date) VALUES (?, ?)",
-                (title, date_text),
+                (title, year),
             )
             conn.commit()
             rows_added += 1
