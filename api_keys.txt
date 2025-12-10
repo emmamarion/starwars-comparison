@@ -1,2 +1,2 @@
-rebrickable: PUT_API_KEY_HERE
-omdb: API_KEY_HERE
+rebrickable: ab31658305e83ef2ca0056f466bf7f74
+omdb: fcd2a78a
