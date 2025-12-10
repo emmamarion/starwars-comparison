@@ -31,3 +31,19 @@ def get_api_key(filename="api_keys.txt"):
 if __name__ == "__main__":
     API_KEY = get_api_key()
     print(API_KEY)
+
+
+DB_NAME = "starwars.db"
+BASE_URL = "https://rebrickable.com/api/v3/lego/sets/"
+LIMIT_PER_RUN = 25   # rubric: max 25 rows per run
+TARGET_TOTAL = 100   # rubric: at least 100 rows total
+
+
+def collect_lego_sets(db_name=DB_NAME):
+    """
+    Fetch Lego sets from the Rebrickable API and insert up to 25 NEW rows
+    into the lego_sets table in the SQLite database.
+
+    - Does NOT insert duplicates (based on set_num)
+    - Stops once 100 or more rows exist in the table
+    """
