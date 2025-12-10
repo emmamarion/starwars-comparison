@@ -120,9 +120,67 @@ def collect_omdb_data():
 
 
 def insert_into_database(limit=25):
-    pass
+     """
+    Inserts movie data into database, limiting to 'limit' new entries per run.
+    
+    Args:
+        limit (int): Maximum number of new entries to add per run (default 25)
+    
+    Returns:
+        int: Number of movies added this run
+    """
+    # Collect data from API
+    movies_data = collect_omdb_data()
+    
+    if not movies_data:
+        print("No movie data collected")
+        return 0
+    
+    conn = sqlite3.connect("starwars.db")
+    cursor = conn.cursor()
+    
+    rows_added = 0
+    
+    print(f"Found {len(movies_data)} Star Wars movies to collect. Processing...")
+    
+    for movie in movies_data:
+        # Check if we've hit the limit
+        if rows_added >= limit:
+            print("Reached limit of 25 rows.")
+            break
+        
+        # Check if movie already exists
+        cursor.execute("SELECT imdb_id FROM MovieMetrics WHERE imdb_id = ?", 
+                      (movie["imdb_id"],))
+        if cursor.fetchone():
+            # If movie already in database, skip it
+            continue
+        
+        # Insert into database
+        try:
+            cursor.execute('''
+                INSERT INTO MovieMetrics 
+                (imdb_id, title, box_office, imdb_rating, rotten_tomatoes)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (movie["imdb_id"], movie["title"], movie["box_office"], 
+                  movie["imdb_rating"], movie["rotten_tomatoes"]))
+            conn.commit()
+            rows_added += 1
+            print(f"Added: {movie['title']}")
+            
+        except sqlite3.IntegrityError:
+            # If the movie is already in the database, skip it
+            continue
+    
+    conn.close()
+    return rows_added
+
 
 
 if __name__ == "__main__":
     API_KEY = get_api_key()
     print(API_KEY)
+
+     # Insert data into database (limit 25 per run)
+    total_added = insert_into_database(limit=25)
+    print(f"Job complete. Total new movies added: {total_added}")
