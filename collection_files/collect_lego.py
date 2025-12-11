@@ -47,3 +47,7 @@ def collect_lego_sets(db_name=DB_NAME):
     - Does NOT insert duplicates (based on set_num)
     - Stops once 100 or more rows exist in the table
     """
+    api_key = get_api_key()
+    if not api_key:
+        print("ERROR: Missing Rebrickable API key.")
+        return
