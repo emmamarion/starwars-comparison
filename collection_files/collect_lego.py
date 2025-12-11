@@ -39,15 +39,27 @@ LIMIT_PER_RUN = 25   # rubric: max 25 rows per run
 TARGET_TOTAL = 100   # rubric: at least 100 rows total
 
 
-def collect_lego_sets(db_name=DB_NAME):
+def create_lego_table(db_filename=DB_FILENAME):
     """
-    Fetch Lego sets from the Rebrickable API and insert up to 25 NEW rows
-    into the lego_sets table in the SQLite database.
+    Creates the lego_sets table if it doesn't already exist.
 
-    - Does NOT insert duplicates (based on set_num)
-    - Stops once 100 or more rows exist in the table
+    We do this here (like MovieMetrics in collect_omdb.py) so we don't have
+    to modify database_setup.py.
     """
-    api_key = get_api_key()
-    if not api_key:
-        print("ERROR: Missing Rebrickable API key.")
-        return
+    conn = sqlite3.connect(db_filename)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS lego_sets (
+            set_num TEXT PRIMARY KEY,
+            name TEXT NOT NULL,
+            year INTEGER,
+            num_parts INTEGER
+        )
+        """
+    )
+
+    conn.commit()
+    conn.close()
+
