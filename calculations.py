@@ -472,6 +472,5 @@ if __name__ == "__main__":
 
     print("\nWriting LEGO calculations...")
     write_lego_calculations_to_file()
-    write_lego_vs_star_wars_to_file()
 
     print("\nAll calculations complete!")
