@@ -46,7 +46,7 @@ def write_comic_data(data, filename="calculation_results.txt"):
 
 # ============================================================================
 # OMDB CALCULATIONS - Kamila Podsiadlo (kampod@umich.edu)
-# Compares Star Wars movies to all other collected movies
+# Compares Star Wars movies to all other collected top movies
 # ============================================================================
 
 def calculate_rating_differences(db_filename="starwars.db"):
@@ -94,11 +94,11 @@ def calculate_rating_differences(db_filename="starwars.db"):
 
 def calculate_average_ratings_comparison(db_filename="starwars.db"):
     """
-    REQUIRED CALCULATION: Compare Star Wars average ratings to all other movies.
-    This answers: Do Star Wars movies rate higher or lower than other films?
+    REQUIRED CALCULATION: Compare Star Wars average ratings to all other top movies.
+    This answers: Do Star Wars movies rate higher or lower than other top films?
     
     Returns:
-        dict: Averages for Star Wars vs Other Movies
+        dict: Averages for Star Wars vs Other Top Movies
     """
     conn = sqlite3.connect(db_filename)
     cursor = conn.cursor()
