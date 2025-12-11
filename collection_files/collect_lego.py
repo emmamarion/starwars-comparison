@@ -1,3 +1,11 @@
+
+#collect_lego.py
+#Author: Ava 
+#Purpose: Collect Lego sets from the Rebrickable API and store them in starwars.db
+
+
+
+
 import re
 import requests
 import sqlite3
