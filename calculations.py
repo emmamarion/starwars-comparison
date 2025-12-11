@@ -474,55 +474,6 @@ def calculate_lego_vs_star_wars_movies(db_filename="starwars.db"):
         conn.close()
 
 
-def write_lego_calculations_to_file(filename="calculation_results.txt"):
-    """
-    Appends Lego-only complexity calculations to the text file.
-    """
-    try:
-        with open(filename, "a") as f:
-            f.write("\n\n")
-            f.write("=" * 70 + "\n")
-            f.write("LEGO SET COMPLEXITY ANALYSIS\n")
-            f.write("=" * 70 + "\n\n")
-
-            # CALCULATION 1: Average complexity by year
-            f.write("AVERAGE LEGO COMPLEXITY BY YEAR\n")
-            f.write("-" * 70 + "\n")
-
-            complexity = calculate_lego_complexity_by_year()
-            if not complexity:
-                f.write("No Lego data available in the database.\n\n")
-            else:
-                for year, avg_parts in sorted(complexity.items()):
-                    f.write(
-                        f"Year: {year:<6} | "
-                        f"Average Pieces per Set: {avg_parts:6.1f}\n"
-                    )
-
-            # CALCULATION 2: Top most complex Lego sets
-            f.write("\nTOP MOST COMPLEX LEGO SETS (BY PART COUNT)\n")
-            f.write("-" * 70 + "\n")
-
-            top_sets = calculate_top_lego_sets()
-            if not top_sets:
-                f.write("No Lego sets found in the database.\n")
-            else:
-                for i, s in enumerate(top_sets, 1):
-                    year_str = s["year"] if s["year"] is not None else "N/A"
-                    f.write(
-                        f"{i:2}. {s['name']} "
-                        f"(Set {s['set_num']}, {year_str}) "
-                        f"- {s['num_parts']} pieces\n"
-                    )
-
-            f.write("\n" + "=" * 70 + "\n")
-
-        print(f"Successfully wrote LEGO calculations to {filename}")
-
-    except IOError as e:
-        print(f"Error writing Lego calculations to file {filename}: {e}")
-
-
 def write_lego_vs_star_wars_to_file(filename="calculation_results.txt"):
     """
     Appends Lego vs Star Wars movie comparison to the report file.
@@ -570,6 +521,7 @@ def write_lego_vs_star_wars_to_file(filename="calculation_results.txt"):
 
 if __name__ == "__main__":
     # Quick manual test if you ever run this file directly
+    print("\nWriting COMIC calculations...")
     print("Comics per year:", calculate_comics_per_year())
     write_comic_data(calculate_comics_per_year())
 
