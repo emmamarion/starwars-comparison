@@ -1,9 +1,9 @@
 """
 collect_omdb.py
 Author: Kamila Podsiadlo (kampod@umich.edu)
-Purpose: Collect Star Wars movies AND top sci-fi movies from OMDB API
+Purpose: Collect Star Wars movies AND top movies from OMDB API
 
-Compares Star Wars movies to other top science fiction films to see how they
+Compares Star Wars movies to other top films to see how they
 rank according to IMDb and Rotten Tomatoes scores.
 
 This file creates its own MovieMetrics table (no need to modify database_setup.py)
@@ -92,16 +92,16 @@ def get_star_wars_movies():
     return movies
 
 
-def get_top_scifi_movies():
+def get_top_movies():
     """
-    Returns list of top science fiction movies for comparison with Star Wars.
-    These are critically acclaimed and popular sci-fi films.
+    Returns list of top movies for comparison with Star Wars.
+    These are critically acclaimed and popular films.
     
     Returns:
         list: List of tuples (imdb_id, title, is_star_wars)
     """
-    scifi_movies = [
-        # Classic Sci-Fi
+    top_movies = [
+        # Classic 
         ("tt0062622", "2001: A Space Odyssey", 0),
         ("tt0078748", "Alien", 0),
         ("tt0083658", "Blade Runner", 0),
@@ -115,7 +115,7 @@ def get_top_scifi_movies():
         ("tt0107290", "Jurassic Park", 0),
         ("tt0108052", "Schindler's List", 0),
         
-        # 1990s Sci-Fi
+        # 1990s 
         ("tt0109830", "Forrest Gump", 0),
         ("tt0110912", "Pulp Fiction", 0),
         ("tt0111161", "The Shawshank Redemption", 0),
@@ -129,7 +129,7 @@ def get_top_scifi_movies():
         ("tt0167260", "The Lord of the Rings: The Return of the King", 0),
         ("tt0172495", "Gladiator", 0),
         
-        # Modern Sci-Fi Classics
+        # Modern Classics
         ("tt0208092", "Snatch", 0),
         ("tt0245429", "Spirited Away", 0),
         ("tt0253474", "The Pianist", 0),
@@ -211,7 +211,7 @@ def get_top_scifi_movies():
         ("tt1825683", "Black Panther", 0),
         ("tt9376612", "Shang-Chi and the Legend of the Ten Rings", 0),
     ]
-    return scifi_movies
+    return top_movies
 
 
 def parse_box_office(box_office_str):
@@ -266,7 +266,7 @@ def fetch_movie_data(api_key, imdb_id):
 
 def collect_omdb_data():
     """
-    Collects both Star Wars AND top sci-fi movies from OMDB API.
+    Collects both Star Wars AND top movies from OMDB API.
     This ensures we get 100+ movies for the project.
     
     Returns:
@@ -276,8 +276,8 @@ def collect_omdb_data():
     if not api_key:
         return []
     
-    # Combine Star Wars and sci-fi movies
-    all_movies = get_star_wars_movies() + get_top_scifi_movies()
+    # Combine Star Wars and top movies
+    all_movies = get_star_wars_movies() + get_top_movies()
     
     movies_data = []
     
@@ -384,12 +384,12 @@ def insert_into_database(limit=25):
     total_star_wars = cursor.fetchone()[0]
     
     cursor.execute("SELECT COUNT(*) FROM MovieMetrics WHERE is_star_wars = 0")
-    total_scifi = cursor.fetchone()[0]
+    total_topmovies = cursor.fetchone()[0]
     
     print(f"\n{'='*70}")
     print(f"Total movies in database: {total_movies}")
     print(f"  - Star Wars movies: {total_star_wars}")
-    print(f"  - Other Sci-Fi movies: {total_scifi}")
+    print(f"  - Other top movies: {total_topmovies}")
     print(f"{'='*70}\n")
     
     conn.close()
