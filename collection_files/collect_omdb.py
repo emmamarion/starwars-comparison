@@ -295,8 +295,6 @@ def insert_into_database(limit=25):
     Returns:
         int: Number of movies added this run
     """
-    # Create table first
-    create_movie_table()
 
     # Collect data from API
     movies_data = collect_omdb_data()
