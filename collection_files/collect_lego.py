@@ -1,4 +1,12 @@
 import re
+import requests
+import sqlite3
+
+# --- CONSTANTS ---
+DB_FILENAME = "starwars.db"
+BASE_URL = "https://rebrickable.com/api/v3/lego/sets/"
+LIMIT_PER_RUN = 25   # rubric: max 25 rows per run
+TARGET_TOTAL = 100   # rubric: at least 100 rows total
 
 
 def get_api_key(filename="api_keys.txt"):
@@ -6,10 +14,10 @@ def get_api_key(filename="api_keys.txt"):
     Returns the Api Key for the Rebrickable API.
 
     Args:
-        filename (str, optinial): filename of textfile where api keys are stored
+        filename (str, optional): filename of textfile where api keys are stored
 
     Returns:
-        api_key (str):
+        api_key (str) or None
     """
     api_key = None
     try:
@@ -18,25 +26,14 @@ def get_api_key(filename="api_keys.txt"):
             api_key = re.search(r"rebrickable: (.*)", text_file_contents)
             if api_key:
                 api_key = api_key.group(1)
-                print("API KEY LOADED")
+                print("Rebrickable API KEY LOADED")
             else:
-                print("WARNING: API key is not loaded.")
+                print("WARNING: Rebrickable API key is not loaded.")
 
     except FileNotFoundError:
         print(f"ERROR: file: {filename} not found.")
 
     return api_key
-
-
-if __name__ == "__main__":
-    API_KEY = get_api_key()
-    print(API_KEY)
-
-
-DB_NAME = "starwars.db"
-BASE_URL = "https://rebrickable.com/api/v3/lego/sets/"
-LIMIT_PER_RUN = 25   # rubric: max 25 rows per run
-TARGET_TOTAL = 100   # rubric: at least 100 rows total
 
 
 def create_lego_table(db_filename=DB_FILENAME):
@@ -62,6 +59,8 @@ def create_lego_table(db_filename=DB_FILENAME):
 
     conn.commit()
     conn.close()
+
+
 def fetch_lego_sets(api_key, page_size=100, page=1):
     """
     Fetches Lego sets from the Rebrickable API.
@@ -91,7 +90,7 @@ def fetch_lego_sets(api_key, page_size=100, page=1):
         return []
 
 
-def insert_lego_sets(limit=25, db_filename=DB_FILENAME):
+def insert_lego_sets(limit=LIMIT_PER_RUN, db_filename=DB_FILENAME):
     """
     Inserts Lego set data into the database, limiting to `limit`
     NEW entries per run.
@@ -122,7 +121,7 @@ def insert_lego_sets(limit=25, db_filename=DB_FILENAME):
     current_count = cursor.fetchone()[0]
     print(f"Current Lego rows in DB: {current_count}")
 
-    if current_count >= 100:
+    if current_count >= TARGET_TOTAL:
         print("✅ Already have 100+ Lego sets. No additional data needed.")
         conn.close()
         return 0
