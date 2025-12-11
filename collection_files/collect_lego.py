@@ -82,9 +82,6 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME):
         print("No Rebrickable API key found; aborting Lego collection.")
         return 0
 
-    # Ensure BOTH tables exist
-    create_lego_tables(db_filename)
-
     conn = sqlite3.connect(db_filename)
     cursor = conn.cursor()
 
