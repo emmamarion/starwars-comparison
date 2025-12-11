@@ -39,7 +39,7 @@ def database_setup(filename):
             box_office INTEGER,
             imdb_rating REAL,
             rotten_tomatoes INTEGER,
-            is_star_wars INTEGER DEFAULT 0,
+            is_star_wars INTEGER DEFAULT 0
         )   
     """
 
