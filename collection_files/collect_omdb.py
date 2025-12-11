@@ -274,7 +274,6 @@ def collect_omdb_data():
             "imdb_rating": imdb_rating,
             "rotten_tomatoes": rotten_tomatoes,
             "is_star_wars": is_star_wars,
-            "genre": movie_data.get("Genre"),
         }
         movies_data.append(movie_info)
 
@@ -328,8 +327,8 @@ def insert_into_database(limit=25):
             cursor.execute(
                 """
                 INSERT INTO MovieMetrics 
-                (imdb_id, title, box_office, imdb_rating, rotten_tomatoes, is_star_wars, genre)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                (imdb_id, title, box_office, imdb_rating, rotten_tomatoes, is_star_wars)
+                VALUES (?, ?, ?, ?, ?, ?)
             """,
                 (
                     movie["imdb_id"],
@@ -338,7 +337,6 @@ def insert_into_database(limit=25):
                     movie["imdb_rating"],
                     movie["rotten_tomatoes"],
                     movie["is_star_wars"],
-                    movie["genre"],
                 ),
             )
             conn.commit()
