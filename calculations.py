@@ -412,6 +412,40 @@ def calculate_top_lego_sets(limit=10, db_filename="starwars.db"):
         conn.close()
 
 
+def calculate_lego_theme_averages(db_filename="starwars.db"):
+    """
+    Calculates the average number of parts per Lego theme.
+    Demonstrates the REQUIRED JOIN for the project rubric.
+    """
+    conn = sqlite3.connect(db_filename)
+    cursor = conn.cursor()
+
+    # JOIN lego_sets (s) and lego_themes (t)
+    query = """
+    SELECT t.name, AVG(s.num_parts), COUNT(s.set_num)
+    FROM lego_sets s
+    JOIN lego_themes t ON s.theme_id = t.id
+    WHERE s.num_parts IS NOT NULL
+    GROUP BY t.name
+    HAVING COUNT(s.set_num) >= 1 
+    ORDER BY AVG(s.num_parts) DESC
+    LIMIT 10
+    """
+
+    try:
+        cursor.execute(query)
+        results = cursor.fetchall()
+        # Returns list of tuples: (theme_name, avg_parts, set_count)
+        return results
+
+    except sqlite3.Error as e:
+        print(f"Database error (Lego Joins): {e}")
+        return []
+
+    finally:
+        conn.close()
+
+
 def write_lego_calculations_to_file(filename="calculation_results.txt"):
     """
     Appends Lego-only complexity calculations to the text file.
@@ -454,6 +488,22 @@ def write_lego_calculations_to_file(filename="calculation_results.txt"):
                     )
 
             f.write("\n" + "=" * 70 + "\n")
+
+            f.write("\nTOP 10 LEGO THEMES BY COMPLEXITY (AVG PARTS)\n")
+            f.write("-" * 70 + "\n")
+
+            # Call the new join function
+            theme_stats = calculate_lego_theme_averages()
+
+            if not theme_stats:
+                f.write("No theme data available.\n")
+            else:
+                f.write(f"{'Theme Name':<40} {'Avg Parts':<10} {'Set Count':<10}\n")
+                f.write("-" * 70 + "\n")
+                for name, avg, count in theme_stats:
+                    # Handle cases where name might be None
+                    safe_name = name if name else "Unknown Theme"
+                    f.write(f"{safe_name:<40} {avg:<10.1f} {count:<10}\n")
 
         print(f"Successfully wrote LEGO calculations to {filename}")
 
