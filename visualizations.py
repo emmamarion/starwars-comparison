@@ -106,7 +106,7 @@ def plot_star_wars_rating_differences(db_filename="starwars.db"):
     # Add value labels
     for bar, diff in zip(bars, differences):
         height = bar.get_height()
-        label_y = height + (1.5 if height > 0 else -2.5)
+        label_y = height + (0.5 if height > 0 else -0.5)
         va = 'bottom' if height > 0 else 'top'
         ax.text(bar.get_x() + bar.get_width()/2., label_y,
                 f'{diff:+.1f}', ha='center', va=va, fontsize=9, fontweight='bold')
@@ -166,7 +166,7 @@ def plot_star_wars_vs_all_averages(db_filename="starwars.db"):
     # Create side-by-side comparison
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 7))
     
-    categories = [f'Star Wars\n({sw_count} movies)', f'Other Movies\n({other_count} movies)']
+    categories = [f'Star Wars\n({sw_count} movies)', f'Top Movies\n({other_count} movies)']
     
     # IMDb comparison
     imdb_scores = [sw_imdb, other_imdb]
@@ -202,7 +202,7 @@ def plot_star_wars_vs_all_averages(db_filename="starwars.db"):
                 f'{score:.1f}', ha='center', va='bottom', 
                 fontsize=14, fontweight='bold')
     
-    plt.suptitle('Star Wars vs Other Movies: Average Ratings Comparison', 
+    plt.suptitle('Star Wars vs Top Movies: Average Ratings Comparison', 
                  fontsize=16, fontweight='bold', y=0.98)
     
     plt.tight_layout()
@@ -252,7 +252,7 @@ def plot_top_movies_with_star_wars_highlighted(db_filename="starwars.db"):
                     edgecolor='black', linewidth=1.5, alpha=0.85)
     
     ax.set_xlabel('Average Rating (IMDb + RT) / 2', fontsize=12, fontweight='bold')
-    ax.set_title('Top 15 Movies Overall\nGold = Star Wars | Blue = Other Movies', 
+    ax.set_title('How Do the Best Star Wars Movies Rank in the Top 15 Movies?\nGold = Star Wars | Blue = Top Movies', 
                  fontsize=14, fontweight='bold', pad=20)
     
     ax.set_yticks(range(len(titles)))
@@ -273,9 +273,9 @@ def plot_top_movies_with_star_wars_highlighted(db_filename="starwars.db"):
     from matplotlib.patches import Patch
     legend_elements = [
         Patch(facecolor='#FFD700', edgecolor='black', label='Star Wars Movies'),
-        Patch(facecolor='#3498db', edgecolor='black', label='Other Movies')
+        Patch(facecolor='#3498db', edgecolor='black', label='Top Movies')
     ]
-    ax.legend(handles=legend_elements, loc='lower right', fontsize=11)
+    ax.legend(handles=legend_elements, loc='lower center', fontsize=11)
     
     plt.tight_layout()
     plt.savefig('top_movies_ranking.png', dpi=300, bbox_inches='tight')
