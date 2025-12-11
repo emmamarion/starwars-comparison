@@ -39,9 +39,6 @@ def get_api_key(filename="api_keys.txt"):
 
     return api_key
 
-
-<<<<<<< HEAD
-=======
 def create_lego_tables(db_filename=DB_NAME):
     """
     Creates the lego_sets and lego_themes tables if they don't already exist.
@@ -87,8 +84,6 @@ def create_lego_tables(db_filename=DB_NAME):
     conn.commit()
     conn.close()
 
-
->>>>>>> cleaning up lego
 def fetch_lego_sets(api_key, page_size=100, page=1):
     """
     Fetches Lego sets from the Rebrickable API.
@@ -105,7 +100,7 @@ def fetch_lego_sets(api_key, page_size=100, page=1):
     params = {
         "page_size": page_size,
         "page": page,
-        #could optionally filter by theme, e.x search ="Star Wars"
+        #could optionally filter by theme, e.x search = "Star Wars"
     }
 
     try:
@@ -217,3 +212,5 @@ if __name__ == "__main__":
     # For testing this file directly:
     added = insert_lego_sets(limit=25)
     print(f"Job complete. Total new Lego sets added: {added}")
+
+    #pushing for emma
