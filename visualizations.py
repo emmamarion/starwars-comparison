@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import sqlite3
+import calculations
 
 def plot_comics_by_year(data):
     """
@@ -283,6 +284,67 @@ def plot_top_movies_with_star_wars_highlighted(db_filename="starwars.db"):
     plt.show()
 
 
+
+
+#LEGOOOO TIMEEEEE
+def plot_lego_complexity_by_year(db_filename="starwars.db"):
+    """
+    Creates a bar chart showing the average number of pieces
+    per Lego set for each release year.
+
+    Data source: lego_sets table (from Rebrickable API).
+    """
+    conn = sqlite3.connect(db_filename)
+    cur = conn.cursor()
+
+    # Get average num_parts per year, ignoring NULLs
+    cur.execute("""
+        SELECT year, AVG(num_parts), COUNT(*)
+        FROM lego_sets
+        WHERE year IS NOT NULL
+          AND num_parts IS NOT NULL
+        GROUP BY year
+        ORDER BY year ASC
+    """)
+    rows = cur.fetchall()
+    conn.close()
+
+    if not rows:
+        print("No Lego data available for visualization.")
+        return
+
+    years = [row[0] for row in rows]
+    avg_parts = [row[1] for row in rows]
+    counts = [row[2] for row in rows]  # in case you want to mention it in your report
+
+    # Convert years to strings for nicer x-axis labels
+    years_str = [str(y) for y in years]
+
+    plt.figure(figsize=(12, 6))
+    plt.bar(years_str, avg_parts, color="#2ecc71", edgecolor="black", zorder=3)
+
+    # Titles and labels
+    plt.title(
+        "Average LEGO Set Complexity by Release Year",
+        fontsize=16,
+        fontweight="bold"
+    )
+    plt.xlabel("Year", fontsize=12)
+    plt.ylabel("Average Number of Pieces per Set", fontsize=12)
+
+    # Rotate x-axis labels so they don't overlap
+    plt.xticks(rotation=45, ha="right")
+
+    # Add subtle grid behind bars
+    plt.grid(axis="y", linestyle="--", alpha=0.7, zorder=0)
+
+    plt.tight_layout()
+    plt.savefig("lego_complexity_by_year.png", dpi=300, bbox_inches="tight")
+    print("[OK] Saved: lego_complexity_by_year.png")
+
+    plt.show()
+
+
 if __name__ == "__main__":
     print("Creating visualizations...")
     
@@ -302,3 +364,87 @@ if __name__ == "__main__":
     plot_top_movies_with_star_wars_highlighted()
     
     print("\nAll visualizations complete!")
+
+
+
+def plot_lego_vs_star_wars_overall(db_filename="starwars.db"):
+    """
+    Visualizes overall Lego set complexity vs Star Wars movie ratings.
+
+    Uses calculations.calculate_lego_vs_star_wars_movies() which returns:
+        {
+            'lego': {'avg_pieces': ..., 'count': ...},
+            'star_wars_movies': {'imdb': ..., 'rt': ..., 'count': ...}
+        }
+
+    The chart has:
+      - Left panel: average pieces per Lego set
+      - Right panel: average IMDb & RT scores for Star Wars movies
+    """
+    results = calculations.calculate_lego_vs_star_wars_movies(db_filename)
+
+    if not results:
+        print("No data available for Lego vs Star Wars visualization.")
+        return
+
+    lego = results["lego"]
+    sw = results["star_wars_movies"]
+
+    lego_avg_pieces = lego["avg_pieces"]
+    lego_count = lego["count"]
+
+    sw_imdb = sw["imdb"]
+    sw_rt = sw["rt"]
+    sw_count = sw["count"]
+
+    # Create side-by-side subplots
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 6))
+
+    # Left: Lego complexity
+  
+    ax1.bar(["Lego Sets"], [lego_avg_pieces],
+            color="#2ecc71", edgecolor="black", linewidth=1.5, zorder=3)
+
+    ax1.set_title("Average LEGO Set Complexity", fontsize=14, fontweight="bold")
+    ax1.set_ylabel("Average Number of Pieces", fontsize=12)
+    ax1.grid(axis="y", linestyle="--", alpha=0.6, zorder=0)
+
+    # Show value above bar
+    ax1.text(0, lego_avg_pieces + lego_avg_pieces * 0.03,
+             f"{lego_avg_pieces:.1f} pieces\n({lego_count} sets)",
+             ha="center", va="bottom", fontsize=10, fontweight="bold")
+
+    # Right: Star Wars ratings
+  
+    labels = [f"IMDb\n({sw_count} movies)", f"Rotten Tomatoes\n({sw_count} movies)"]
+    scores = [sw_imdb, sw_rt]
+    colors = ["#3498db", "#e74c3c"]
+
+    bars = ax2.bar(labels, scores, color=colors,
+                   edgecolor="black", linewidth=1.5, zorder=3)
+
+    ax2.set_title("Average Star Wars Movie Ratings", fontsize=14, fontweight="bold")
+    ax2.set_ylabel("Average Score (0–100)", fontsize=12)
+    ax2.set_ylim(0, 100)
+    ax2.grid(axis="y", linestyle="--", alpha=0.6, zorder=0)
+
+    # Add value labels on each bar
+    for bar, score in zip(bars, scores):
+        height = bar.get_height()
+        ax2.text(bar.get_x() + bar.get_width() / 2, height + 2,
+                 f"{score:.1f}",
+                 ha="center", va="bottom", fontsize=10, fontweight="bold")
+
+    # Layout & save
+
+    plt.suptitle(
+        "LEGO Set Complexity vs Star Wars Movie Reception",
+        fontsize=16,
+        fontweight="bold",
+        y=0.98,
+    )
+
+    plt.tight_layout()
+    plt.savefig("lego_vs_star_wars_overall.png", dpi=300, bbox_inches="tight")
+    print("[OK] Saved: lego_vs_star_wars_overall.png")
+    plt.show()
