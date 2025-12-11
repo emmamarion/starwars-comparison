@@ -29,6 +29,27 @@ def main():
     # collect_swapi.seed_manufacturers(swapi_data, database_filename, limit=25)
     # collect_swapi.seed_vehicles(swapi_data, database_filename, limit=25)
 
+# Please let me know if I am supposed to add this here, i feel like it makes sense
+    print("\nCollecting Lego set data from Rebrickable...")
+    lego_added = collect_lego.insert_lego_sets(limit=25)
+    print(f"Total new Lego sets added this run: {lego_added}")
+
+    # Lego-only calculations written to file
+    calculations.write_lego_calculations_to_file(calc_results_filename)
+
+    # Lego vs Star Wars movie comparison written to file
+    calculations.write_lego_vs_star_wars_to_file(calc_results_filename)
+
+    # Lego visualizations will be added in visualizations.py
+    # e.g.:
+    # visualizations.plot_lego_complexity_by_year()
+    # visualizations.plot_lego_vs_star_wars_overall()
+
+
+
+
+
+
 
 if __name__ == "__main__":
     main()
