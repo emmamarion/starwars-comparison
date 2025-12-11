@@ -461,51 +461,6 @@ def write_lego_calculations_to_file(filename="calculation_results.txt"):
         print(f"Error writing Lego calculations to file {filename}: {e}")
 
 
-def write_lego_vs_star_wars_to_file(filename="calculation_results.txt"):
-    """
-    Appends Lego vs Star Wars movie comparison to the report file.
-    """
-    try:
-        with open(filename, "a") as f:
-            f.write("\n\n")
-            f.write("=" * 70 + "\n")
-            f.write("LEGO COMPLEXITY vs STAR WARS MOVIE RATINGS (OVERALL)\n")
-            f.write("=" * 70 + "\n\n")
-
-            results = calculate_lego_vs_star_wars_movies()
-
-            if not results:
-                f.write("No Lego vs movie comparison data available.\n")
-                return
-
-            lego = results["lego"]
-            sw = results["star_wars_movies"]
-
-            f.write("Lego Sets (All Themes in Database):\n")
-            f.write(f"  Total Sets:          {lego['count']}\n")
-            f.write(f"  Avg Pieces per Set:  {lego['avg_pieces']:.1f}\n\n")
-
-            f.write("Star Wars Movies (from MovieMetrics table):\n")
-            f.write(f"  Total Movies:        {sw['count']}\n")
-            f.write(f"  Avg IMDb Rating:     {sw['imdb']:.1f}/100\n")
-            f.write(f"  Avg RT Score:        {sw['rt']:.1f}/100\n\n")
-
-            f.write("Interpretation:\n")
-            f.write(
-                "  We compare how 'complex' Lego sets are on average (by piece count)\n"
-                "  to how positively Star Wars movies are received (by IMDb & RT).\n"
-                "  This gives a rough sense of whether Star Wars lives up to its\n"
-                "  massive Lego presence in terms of critical reception.\n"
-            )
-
-            f.write("\n" + "=" * 70 + "\n")
-
-        print(f"Successfully wrote LEGO vs Star Wars comparison to {filename}")
-
-    except IOError as e:
-        print(f"Error writing Lego vs Star Wars comparison to file {filename}: {e}")
-
-
 if __name__ == "__main__":
     # Quick manual test if you ever run this file directly
     print("\nWriting COMIC calculations...")
