@@ -29,7 +29,23 @@ def main():
     # collect_swapi.seed_manufacturers(swapi_data, database_filename, limit=25)
     # collect_swapi.seed_vehicles(swapi_data, database_filename, limit=25)
 
-# Please let me know if I am supposed to add this here, i feel like it makes sense
+
+    # I added this for Kamilla pls let me know if thats ok(MovieMetrics)
+    
+    print("\nCollecting OMDB movie data...")
+    movies_added = collect_omdb.insert_into_database(limit=25)
+    print(f"Total new movies added this run: {movies_added}")
+
+    # Write OMDB calculations to the same text file
+    calculations.write_omdb_calculations_to_file(calc_results_filename)
+
+    # (Optional) you can also call OMDB visualizations here if you want:
+    # visualizations.plot_star_wars_rating_differences(database_filename)
+    # visualizations.plot_star_wars_vs_all_averages(database_filename)
+    # visualizations.plot_top_movies_with_star_wars_highlighted(database_filename)
+
+
+    # Please let me know if I am supposed to add this here, i feel like it makes sense
     print("\nCollecting Lego set data from Rebrickable...")
     lego_added = collect_lego.insert_lego_sets(limit=25)
     print(f"Total new Lego sets added this run: {lego_added}")
@@ -40,14 +56,11 @@ def main():
     # Lego vs Star Wars movie comparison written to file
     calculations.write_lego_vs_star_wars_to_file(calc_results_filename)
 
-    # Lego visualizations will be added in visualizations.py
-    # e.g.:
-    # visualizations.plot_lego_complexity_by_year()
-    # visualizations.plot_lego_vs_star_wars_overall()
+    # Lego visualization
+    visualizations.plot_lego_complexity_by_year(database_filename)
+    visualizations.plot_lego_vs_star_wars_overall(database_filename)
 
-
-
-
+    print("\nAll data collection, calculations, and some visualizations complete!")
 
 
 
