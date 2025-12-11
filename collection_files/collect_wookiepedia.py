@@ -84,3 +84,8 @@ def scrape(html_content, database_filename="starwars.db", limit=25):
 
     conn.close()
     return rows_added
+
+
+if __name__ == "__main__":
+    html_content = collect_comics()
+    scrape(html_content)
