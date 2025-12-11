@@ -40,7 +40,6 @@ def database_setup(filename):
             imdb_rating REAL,
             rotten_tomatoes INTEGER,
             is_star_wars INTEGER DEFAULT 0,
-            genre TEXT
         )   
     """
 
