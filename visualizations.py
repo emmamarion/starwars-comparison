@@ -283,6 +283,67 @@ def plot_top_movies_with_star_wars_highlighted(db_filename="starwars.db"):
     plt.show()
 
 
+
+
+#LEGOOOO TIMEEEEE
+def plot_lego_complexity_by_year(db_filename="starwars.db"):
+    """
+    Creates a bar chart showing the average number of pieces
+    per Lego set for each release year.
+
+    Data source: lego_sets table (from Rebrickable API).
+    """
+    conn = sqlite3.connect(db_filename)
+    cur = conn.cursor()
+
+    # Get average num_parts per year, ignoring NULLs
+    cur.execute("""
+        SELECT year, AVG(num_parts), COUNT(*)
+        FROM lego_sets
+        WHERE year IS NOT NULL
+          AND num_parts IS NOT NULL
+        GROUP BY year
+        ORDER BY year ASC
+    """)
+    rows = cur.fetchall()
+    conn.close()
+
+    if not rows:
+        print("No Lego data available for visualization.")
+        return
+
+    years = [row[0] for row in rows]
+    avg_parts = [row[1] for row in rows]
+    counts = [row[2] for row in rows]  # in case you want to mention it in your report
+
+    # Convert years to strings for nicer x-axis labels
+    years_str = [str(y) for y in years]
+
+    plt.figure(figsize=(12, 6))
+    plt.bar(years_str, avg_parts, color="#2ecc71", edgecolor="black", zorder=3)
+
+    # Titles and labels
+    plt.title(
+        "Average LEGO Set Complexity by Release Year",
+        fontsize=16,
+        fontweight="bold"
+    )
+    plt.xlabel("Year", fontsize=12)
+    plt.ylabel("Average Number of Pieces per Set", fontsize=12)
+
+    # Rotate x-axis labels so they don't overlap
+    plt.xticks(rotation=45, ha="right")
+
+    # Add subtle grid behind bars
+    plt.grid(axis="y", linestyle="--", alpha=0.7, zorder=0)
+
+    plt.tight_layout()
+    plt.savefig("lego_complexity_by_year.png", dpi=300, bbox_inches="tight")
+    print("[OK] Saved: lego_complexity_by_year.png")
+
+    plt.show()
+
+
 if __name__ == "__main__":
     print("Creating visualizations...")
     
