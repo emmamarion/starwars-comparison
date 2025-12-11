@@ -1,4 +1,8 @@
-#  EMMA MARION
+"""
+collect_wookiepedia.py
+Author: Emma Marion (emarion@umich.edu)
+Purpose: Collect cannon Star Wars comics by websceraping wookiepedia
+"""
 
 from bs4 import BeautifulSoup
 import requests
