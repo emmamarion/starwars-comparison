@@ -3,6 +3,7 @@ import calculations
 import visualizations
 from collection_files import collect_lego
 from collection_files import collect_wookiepedia
+from collection_files import collect_omdb
 
 
 def main():
