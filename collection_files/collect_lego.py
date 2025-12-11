@@ -169,7 +169,7 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME):
         if theme_id is not None:
             cursor.execute(
                 "INSERT OR IGNORE INTO lego_themes (id) VALUES (?)",
-                (theme_id,),
+                (theme_id,theme_name),
             )
 
         # Skip if set already exists in lego_sets
