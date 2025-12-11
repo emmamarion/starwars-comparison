@@ -61,3 +61,7 @@ def database_setup(filename):
     conn.commit()  # save the changes
     conn.close()  # close the connection
     print("Database setup complete")
+
+
+if __name__ == "__main__":
+    database_setup(filename="starwars.db")
