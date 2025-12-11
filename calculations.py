@@ -413,7 +413,7 @@ def calculate_lego_vs_star_wars_movies(db_filename="starwars.db"):
         lego_avg_pieces = lego_result[0] if lego_result[0] else 0
         lego_count = lego_result[1]
 
-        # Average Star Wars ratings (reuse same logic style as OMDB averages)
+        # Average Star Wars ratings
         cursor.execute("""
             SELECT AVG(imdb_rating), AVG(rotten_tomatoes), COUNT(*)
             FROM MovieMetrics
@@ -524,7 +524,6 @@ def write_lego_vs_star_wars_to_file(filename="calculation_results.txt"):
             f.write(f"  Avg IMDb Rating:     {sw['imdb']:.1f}/100\n")
             f.write(f"  Avg RT Score:        {sw['rt']:.1f}/100\n\n")
 
-            # Simple comparison sentence
             f.write("Interpretation:\n")
             f.write(
                 "  We compare how 'complex' Lego sets are on average (by piece count)\n"
@@ -540,4 +539,17 @@ def write_lego_vs_star_wars_to_file(filename="calculation_results.txt"):
     except IOError as e:
         print(f"Error writing Lego vs Star Wars comparison to file {filename}: {e}")
 
-        # Let me know if these make sense? 
+
+if __name__ == "__main__":
+    # Quick manual test if you ever run this file directly
+    print("Comics per year:", calculate_comics_per_year())
+    write_comic_data(calculate_comics_per_year())
+
+    print("\nWriting OMDB calculations...")
+    write_omdb_calculations_to_file()
+
+    print("\nWriting LEGO calculations...")
+    write_lego_calculations_to_file()
+    write_lego_vs_star_wars_to_file()
+
+    print("\nAll calculations complete!")
