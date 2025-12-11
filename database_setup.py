@@ -32,6 +32,18 @@ def database_setup(filename):
         )
     """
 
+    table_3 = """
+         CREATE TABLE IF NOT EXISTS MovieMetrics (
+            imdb_id TEXT PRIMARY KEY,
+            title TEXT NOT NULL,
+            box_office INTEGER,
+            imdb_rating REAL,
+            rotten_tomatoes INTEGER,
+            is_star_wars INTEGER DEFAULT 0,
+            genre TEXT
+        )   
+    """
+
     # Table 5: Media types
     table_5 = """
         CREATE TABLE IF NOT EXISTS comics (
@@ -43,6 +55,7 @@ def database_setup(filename):
     # Parent tables
     cursor.execute(table_1)
     cursor.execute(table_2)
+    cursor.execute(table_3)
     cursor.execute(table_5)  # Create Comic Table
 
     conn.commit()  # save the changes
