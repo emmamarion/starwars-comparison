@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import sqlite3
-import calculations
 
 
 def plot_comics_by_year(data):
