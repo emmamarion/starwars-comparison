@@ -138,7 +138,6 @@ def get_top_movies():
         ("tt2024544", "12 Years a Slave", 0),
         ("tt2096673", "Inside Out", 0),
         ("tt2106476", "Hacksaw Ridge", 0),
-        ("tt2119532", "Hacksaw Ridge", 0),
         ("tt2267998", "Gone Girl", 0),
         ("tt2278388", "The Grand Budapest Hotel", 0),
         ("tt2380307", "Coco", 0),
@@ -160,10 +159,8 @@ def get_top_movies():
         ("tt0848228", "The Avengers", 0),
         ("tt1856101", "Blade Runner 2049", 0),
         ("tt2582846", "The Imitation Game", 0),
-        ("tt4633694", "Spider-Man: Into the Spider-Verse", 0),
         ("tt0266543", "Finding Nemo", 0),
         ("tt1049413", "Up", 0),
-        ("tt2380307", "Coco", 0),
         ("tt0114814", "The Usual Suspects", 0),
         ("tt0268380", "Ice Age", 0),
         ("tt0382932", "Ratatouille", 0),
@@ -177,7 +174,6 @@ def get_top_movies():
         ("tt4154664", "Captain America: Civil War", 0),
         ("tt3501632", "Thor: Ragnarok", 0),
         ("tt4154756", "Avengers: Infinity War", 0),
-        ("tt4154796", "Avengers: Endgame", 0),
         ("tt1825683", "Black Panther", 0),
         ("tt9376612", "Shang-Chi and the Legend of the Ten Rings", 0),
     ]
@@ -274,7 +270,6 @@ def collect_omdb_data():
             "imdb_rating": imdb_rating,
             "rotten_tomatoes": rotten_tomatoes,
             "is_star_wars": is_star_wars,
-            "genre": movie_data.get("Genre"),
         }
         movies_data.append(movie_info)
 
@@ -328,8 +323,8 @@ def insert_into_database(limit=25):
             cursor.execute(
                 """
                 INSERT INTO MovieMetrics 
-                (imdb_id, title, box_office, imdb_rating, rotten_tomatoes, is_star_wars, genre)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                (imdb_id, title, box_office, imdb_rating, rotten_tomatoes, is_star_wars)
+                VALUES (?, ?, ?, ?, ?, ?)
             """,
                 (
                     movie["imdb_id"],
@@ -338,7 +333,6 @@ def insert_into_database(limit=25):
                     movie["imdb_rating"],
                     movie["rotten_tomatoes"],
                     movie["is_star_wars"],
-                    movie["genre"],
                 ),
             )
             conn.commit()

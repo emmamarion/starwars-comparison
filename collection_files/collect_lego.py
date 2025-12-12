@@ -40,6 +40,52 @@ def get_api_key(filename="api_keys.txt"):
     return api_key
 
 
+def create_lego_tables(db_filename=DB_NAME):
+    """
+    Creates the lego_sets and lego_themes tables if they don't already exist.
+
+    lego_themes:
+        id  INTEGER PRIMARY KEY      (matches Rebrickable theme_id)
+        name TEXT UNIQUE NULL        (optional – we can add later)
+
+    lego_sets:
+        set_num  TEXT PRIMARY KEY
+        name     TEXT NOT NULL
+        year     INTEGER
+        num_parts INTEGER
+        theme_id INTEGER REFERENCES lego_themes(id)
+    """
+    conn = sqlite3.connect(db_filename)
+    cursor = conn.cursor()
+
+    # Theme table (one row per theme_id)
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS lego_themes (
+            id   INTEGER PRIMARY KEY,
+            name TEXT UNIQUE
+        )
+        """
+    )
+
+    # Lego sets table, now with theme_id as integer
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS lego_sets (
+            set_num   TEXT PRIMARY KEY,
+            name      TEXT NOT NULL,
+            year      INTEGER,
+            num_parts INTEGER,
+            theme_id  INTEGER,
+            FOREIGN KEY(theme_id) REFERENCES lego_themes(id)
+        )
+        """
+    )
+
+    conn.commit()
+    conn.close()
+
+
 def fetch_lego_sets(api_key, page_size=100, page=1):
     """
     Fetches Lego sets from the Rebrickable API.
@@ -56,7 +102,7 @@ def fetch_lego_sets(api_key, page_size=100, page=1):
     params = {
         "page_size": page_size,
         "page": page,
-        # you could optionally filter by theme, e.g. search="Star Wars"
+        # could optionally filter by theme, e.x search = "Star Wars"
     }
 
     try:
@@ -95,7 +141,7 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME):
         conn.close()
         return 0
 
-    # Fetch a big page of sets; we will still only insert up to `limit`
+    # Fetch a big page of sets, we will still only insert up to `limit`
     lego_sets = fetch_lego_sets(api_key, page_size=100, page=1)
     if not lego_sets:
         print("No Lego data fetched from API.")
@@ -116,24 +162,24 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME):
         name = lego_set.get("name")
         year = lego_set.get("year")
         num_parts = lego_set.get("num_parts")
-        theme_id = lego_set.get("theme_id")  # <-- integer from API
+        theme_id = lego_set.get("theme_id")  # from API
 
         if not set_num:
-            continue  # skip weird / incomplete rows
+            continue  # skip weird or incomplete rows
 
-        # 1) Ensure the theme exists in lego_themes (integer key)
+        # Ensure the theme exists in lego_themes (integer key)
         if theme_id is not None:
             cursor.execute(
-                "INSERT OR IGNORE INTO lego_themes (id) VALUES (?)",
-                (theme_id,),
+                "INSERT OR IGNORE INTO lego_themes (id, name) VALUES (?) ",
+                (theme_id),
             )
 
-        # 2) Skip if set already exists in lego_sets
+        # Skip if set already exists in lego_sets
         cursor.execute("SELECT 1 FROM lego_sets WHERE set_num = ?", (set_num,))
         if cursor.fetchone():
             continue
 
-        # 3) Insert set, storing theme_id as integer FK
+        # Insert set, storing theme_id as integer FK
         cursor.execute(
             """
             INSERT INTO lego_sets (set_num, name, year, num_parts, theme_id)
@@ -168,3 +214,5 @@ if __name__ == "__main__":
     # For testing this file directly:
     added = insert_lego_sets(limit=25)
     print(f"Job complete. Total new Lego sets added: {added}")
+
+    # pushing for emma

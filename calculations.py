@@ -412,63 +412,35 @@ def calculate_top_lego_sets(limit=10, db_filename="starwars.db"):
         conn.close()
 
 
-def calculate_lego_vs_star_wars_movies(db_filename="starwars.db"):
+def calculate_lego_theme_averages(db_filename="starwars.db"):
     """
-    Compares overall Lego set complexity to overall Star Wars movie ratings.
-
-    Returns:
-        dict:
-        {
-            'lego': {'avg_pieces': ..., 'count': ...},
-            'star_wars_movies': {'imdb': ..., 'rt': ..., 'count': ...}
-        }
+    Calculates the average number of parts per Lego theme.
+    Demonstrates the REQUIRED JOIN for the project rubric.
     """
     conn = sqlite3.connect(db_filename)
     cursor = conn.cursor()
 
+    # JOIN lego_sets (s) and lego_themes (t)
+    query = """
+    SELECT t.name, AVG(s.num_parts), COUNT(s.set_num)
+    FROM lego_sets s
+    JOIN lego_themes t ON s.theme_id = t.id
+    WHERE s.num_parts IS NOT NULL
+    GROUP BY t.name
+    HAVING COUNT(s.set_num) >= 1 
+    ORDER BY AVG(s.num_parts) DESC
+    LIMIT 10
+    """
+
     try:
-        # Average Lego pieces
-        cursor.execute(
-            """
-            SELECT AVG(num_parts), COUNT(*)
-            FROM lego_sets
-            WHERE num_parts IS NOT NULL
-        """
-        )
-        lego_result = cursor.fetchone()
-        lego_avg_pieces = lego_result[0] if lego_result[0] else 0
-        lego_count = lego_result[1]
-
-        # Average Star Wars ratings
-        cursor.execute(
-            """
-            SELECT AVG(imdb_rating), AVG(rotten_tomatoes), COUNT(*)
-            FROM MovieMetrics
-            WHERE is_star_wars = 1
-              AND imdb_rating IS NOT NULL
-              AND rotten_tomatoes IS NOT NULL
-        """
-        )
-        sw_result = cursor.fetchone()
-        sw_imdb_100 = sw_result[0] * 10 if sw_result[0] else 0
-        sw_rt = sw_result[1] if sw_result[1] else 0
-        sw_count = sw_result[2]
-
-        return {
-            "lego": {
-                "avg_pieces": lego_avg_pieces,
-                "count": lego_count,
-            },
-            "star_wars_movies": {
-                "imdb": sw_imdb_100,
-                "rt": sw_rt,
-                "count": sw_count,
-            },
-        }
+        cursor.execute(query)
+        results = cursor.fetchall()
+        # Returns list of tuples: (theme_name, avg_parts, set_count)
+        return results
 
     except sqlite3.Error as e:
-        print(f"Database error (Lego vs Star Wars movies): {e}")
-        return {}
+        print(f"Database error (Lego Joins): {e}")
+        return []
 
     finally:
         conn.close()
@@ -517,59 +489,31 @@ def write_lego_calculations_to_file(filename="calculation_results.txt"):
 
             f.write("\n" + "=" * 70 + "\n")
 
+            f.write("\nTOP 10 LEGO THEMES BY COMPLEXITY (AVG PARTS)\n")
+            f.write("-" * 70 + "\n")
+
+            # Call the new join function
+            theme_stats = calculate_lego_theme_averages()
+
+            if not theme_stats:
+                f.write("No theme data available.\n")
+            else:
+                f.write(f"{'Theme Name':<40} {'Avg Parts':<10} {'Set Count':<10}\n")
+                f.write("-" * 70 + "\n")
+                for name, avg, count in theme_stats:
+                    # Handle cases where name might be None
+                    safe_name = name if name else "Unknown Theme"
+                    f.write(f"{safe_name:<40} {avg:<10.1f} {count:<10}\n")
+
         print(f"Successfully wrote LEGO calculations to {filename}")
 
     except IOError as e:
         print(f"Error writing Lego calculations to file {filename}: {e}")
 
 
-def write_lego_vs_star_wars_to_file(filename="calculation_results.txt"):
-    """
-    Appends Lego vs Star Wars movie comparison to the report file.
-    """
-    try:
-        with open(filename, "a") as f:
-            f.write("\n\n")
-            f.write("=" * 70 + "\n")
-            f.write("LEGO COMPLEXITY vs STAR WARS MOVIE RATINGS (OVERALL)\n")
-            f.write("=" * 70 + "\n\n")
-
-            results = calculate_lego_vs_star_wars_movies()
-
-            if not results:
-                f.write("No Lego vs movie comparison data available.\n")
-                return
-
-            lego = results["lego"]
-            sw = results["star_wars_movies"]
-
-            f.write("Lego Sets (All Themes in Database):\n")
-            f.write(f"  Total Sets:          {lego['count']}\n")
-            f.write(f"  Avg Pieces per Set:  {lego['avg_pieces']:.1f}\n\n")
-
-            f.write("Star Wars Movies (from MovieMetrics table):\n")
-            f.write(f"  Total Movies:        {sw['count']}\n")
-            f.write(f"  Avg IMDb Rating:     {sw['imdb']:.1f}/100\n")
-            f.write(f"  Avg RT Score:        {sw['rt']:.1f}/100\n\n")
-
-            f.write("Interpretation:\n")
-            f.write(
-                "  We compare how 'complex' Lego sets are on average (by piece count)\n"
-                "  to how positively Star Wars movies are received (by IMDb & RT).\n"
-                "  This gives a rough sense of whether Star Wars lives up to its\n"
-                "  massive Lego presence in terms of critical reception.\n"
-            )
-
-            f.write("\n" + "=" * 70 + "\n")
-
-        print(f"Successfully wrote LEGO vs Star Wars comparison to {filename}")
-
-    except IOError as e:
-        print(f"Error writing Lego vs Star Wars comparison to file {filename}: {e}")
-
-
 if __name__ == "__main__":
     # Quick manual test if you ever run this file directly
+    print("\nWriting COMIC calculations...")
     print("Comics per year:", calculate_comics_per_year())
     write_comic_data(calculate_comics_per_year())
 
@@ -578,6 +522,5 @@ if __name__ == "__main__":
 
     print("\nWriting LEGO calculations...")
     write_lego_calculations_to_file()
-    write_lego_vs_star_wars_to_file()
 
     print("\nAll calculations complete!")
