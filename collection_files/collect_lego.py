@@ -40,7 +40,7 @@ def get_api_key(filename="api_keys.txt"):
     return api_key
 
 
-def fetch_lego_sets(api_key, page_size=100, page=1):
+def fetch_lego_sets(api_key, page_size=100, page=1, theme_id=158):
     """
     Fetches Lego sets from the Rebrickable API.
 
@@ -48,6 +48,7 @@ def fetch_lego_sets(api_key, page_size=100, page=1):
         api_key (str): Rebrickable API key
         page_size (int): number of results per page (request side)
         page (int): which page to request
+        theme_id (int): id of lego theme to search (by default 158 is star wars)
 
     Returns:
         list[dict]: list of Lego set dictionaries
@@ -56,7 +57,7 @@ def fetch_lego_sets(api_key, page_size=100, page=1):
     params = {
         "page_size": page_size,
         "page": page,
-        # could optionally filter by theme, e.x search = "Star Wars"
+        "theme_id": 158,
     }
 
     try:
@@ -122,11 +123,11 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME):
             continue  # skip weird or incomplete rows
 
         # Ensure the theme exists in lego_themes (integer key)
-        if theme_id is not None:
-            cursor.execute(
-                "INSERT OR IGNORE INTO lego_themes (id, name) VALUES (?) ",
-                (theme_id),
-            )
+        # if theme_id is not None:
+        #     cursor.execute(
+        #         "INSERT OR IGNORE INTO lego_themes (id) VALUES (?)",
+        #         (theme_id),
+        #     )
 
         # Skip if set already exists in lego_sets
         cursor.execute("SELECT 1 FROM lego_sets WHERE set_num = ?", (set_num,))
