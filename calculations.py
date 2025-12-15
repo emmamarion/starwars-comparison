@@ -383,9 +383,10 @@ def calculate_top_lego_sets(limit=10, db_filename="starwars.db"):
     cursor = conn.cursor()
 
     query = """
-    SELECT set_num, name, year, num_parts
-    FROM lego_sets
+    SELECT s.set_num, n.name, s.year, s.num_parts
+    FROM lego_sets s
     WHERE num_parts IS NOT NULL
+    JOIN lego_set_names n ON s.name_id = n.id
     ORDER BY num_parts DESC
     LIMIT ?;
     """
