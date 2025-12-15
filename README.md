@@ -1,4 +1,4 @@
-# 🚀 Final SI201 Project: starwars-comparison
+# Final SI201 Project: starwars-comparison
 
 ## Team
 **Names:** Emma Marion, Kamila Podsiadlo, Ava Anderson
