@@ -70,7 +70,7 @@ def fetch_lego_sets(api_key, page_size=100, page=1, theme_id=158):
         return []
 
 
-def insert_lego_sets(limit=25, db_filename=DB_NAME):
+def insert_lego_sets(limit=25, db_filename=DB_NAME, page_size=100):
     """
     Inserts Lego set data into the database, limiting to `limit`
     NEW entries per run.
@@ -91,13 +91,13 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME):
     current_count = cursor.fetchone()[0]
     print(f"Current Lego rows in DB: {current_count}")
 
-    if current_count >= 100:
-        print("Already have 100+ Lego sets. No additional data needed.")
-        conn.close()
-        return 0
+    # If we have 0-99 items, we need page 1.
+    # If we have 100-199 items, we need page 2
+    page_to_fetch = (current_count // page_size) + 1
+    print(f"Fetched page {page_to_fetch} from API...")
 
     # Fetch a big page of sets, we will still only insert up to `limit`
-    lego_sets = fetch_lego_sets(api_key, page_size=100, page=1)
+    lego_sets = fetch_lego_sets(api_key, page_size=page_size, page=page_to_fetch)
     if not lego_sets:
         print("No Lego data fetched from API.")
         conn.close()
@@ -117,30 +117,32 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME):
         name = lego_set.get("name")
         year = lego_set.get("year")
         num_parts = lego_set.get("num_parts")
-        theme_id = lego_set.get("theme_id")  # from API
+        theme_id = lego_set.get("theme_id")
 
         if not set_num:
             continue  # skip weird or incomplete rows
 
-        # Ensure the theme exists in lego_themes (integer key)
-        # if theme_id is not None:
-        #     cursor.execute(
-        #         "INSERT OR IGNORE INTO lego_themes (id) VALUES (?)",
-        #         (theme_id),
-        #     )
+        # Insert set name into the lego_set_names table
+        cursor.execute(
+            "INSERT OR IGNORE INTO lego_set_names (name) VALUES (?)", (name,)
+        )
+
+        # Get the unique name ID of the set from the lego_set_names table
+        cursor.execute("SELECT id FROM lego_set_names where name = ?", (name,))
+        name_id = cursor.fetchone()[0]
 
         # Skip if set already exists in lego_sets
         cursor.execute("SELECT 1 FROM lego_sets WHERE set_num = ?", (set_num,))
         if cursor.fetchone():
             continue
 
-        # Insert set, storing theme_id as integer FK
+        # Insert Lego Set using name_id
         cursor.execute(
             """
-            INSERT INTO lego_sets (set_num, name, year, num_parts, theme_id)
+            INSERT INTO lego_sets (set_num, name_id, year, num_parts, theme_id)
             VALUES (?, ?, ?, ?, ?)
             """,
-            (set_num, name, year, num_parts, theme_id),
+            (set_num, name_id, year, num_parts, theme_id),
         )
         rows_added += 1
         print(
