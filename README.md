@@ -48,14 +48,14 @@ Follow these steps in order to run the project and generate the final results:
 
 ---
 
-## 💾 Project Output
+## Project Output
 
 * The **database** file and **calculation results** files are saved directly into the root project folder.
 * The **PNG visualization files** are saved to the `visualizations` folder.
 
 ---
 
-## ⚠️ Important Notes and Limitations
+## Important Notes and Limitations
 
 ### `collect_wookiepedia.py`
 * While string data for comic names may look very similar to one another, they are unique. The reason for this is that Wookieepedia counts each edition of a comic as a separate entry. The database table creation uses the `UNIQUE` keyword for the comic name column to ensure only one entry per comic (edition) is stored.
