@@ -122,19 +122,22 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME, page_size=100):
         if not set_num:
             continue  # skip weird or incomplete rows
 
-        # Insert set name into the lego_set_names table
-        cursor.execute(
-            "INSERT OR IGNORE INTO lego_set_names (name) VALUES (?)", (name,)
-        )
-
-        # Get the unique name ID of the set from the lego_set_names table
-        cursor.execute("SELECT id FROM lego_set_names where name = ?", (name,))
-        name_id = cursor.fetchone()[0]
-
         # Skip if set already exists in lego_sets
         cursor.execute("SELECT 1 FROM lego_sets WHERE set_num = ?", (set_num,))
         if cursor.fetchone():
             continue
+
+        # Get the unique name ID of the set from the lego_set_names table
+        cursor.execute("SELECT id FROM lego_set_names where name = ?", (name,))
+        result = cursor.fetchone()
+
+        if result:
+            # Found it! Use existing ID
+            name_id = result[0]
+        else:
+            # Step B: Doesn't exist. Now we insert safely.
+            cursor.execute("INSERT INTO lego_set_names (name) VALUES (?)", (name,))
+            name_id = cursor.lastrowid  # Grab the ID of the row we just made
 
         # Insert Lego Set using name_id
         cursor.execute(
