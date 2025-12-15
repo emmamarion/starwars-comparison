@@ -4,12 +4,18 @@
 
 
 Instructions for Running Our Code
+
 Sign up for OMDB API key here: https://www.omdbapi.com/apikey.aspx
+
 Create a Rebrickable account for an api key here: https://rebrickable.com/api/
+
 Once an account is created,  generate an API Key from your profile's settings page.
 Add API keys to the api_keys.txt file. Make sure to leave a space between the colon and the API key.
+
 rebrickable: PUT_KEY_HERE
+
 omdb: PUT_KEY_HERE
+
 Run database_setup.py 
 Run each collect_().py file at least 5 times, located in the collection_files folder.
 collect_lego.py
