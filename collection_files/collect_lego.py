@@ -174,5 +174,3 @@ if __name__ == "__main__":
     # For testing this file directly:
     added = insert_lego_sets(limit=25)
     print(f"Job complete. Total new Lego sets added: {added}")
-
-    # pushing for emma
