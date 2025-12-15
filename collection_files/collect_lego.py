@@ -91,7 +91,7 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME, page_size=100):
     for t_id, t_name in THEME_IDS.items():
         try:
             cursor.execute(
-                "INSTER OR IGNORE INTO lego_themes (id, name) VALUES (?, ?)",
+                "INSERT OR IGNORE INTO lego_themes (id, name) VALUES (?, ?)",
                 (t_id, t_name),
             )
         except sqlite3.Error as e:
