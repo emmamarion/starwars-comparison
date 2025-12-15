@@ -332,7 +332,7 @@ def insert_into_database(limit=25):
             conn.commit()
             rows_added += 1
 
-            movie_type = "[SW]" if movie["is_star_wars"] else "[SF]"
+            movie_type = "[SW]" if movie["is_star_wars"] else "[TM]"
             print(f"Added: {movie_type} - {movie['title']}")
 
         except sqlite3.IntegrityError:
