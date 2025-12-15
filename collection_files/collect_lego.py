@@ -1,5 +1,5 @@
 # collect_lego.py
-# Author: Ava
+# Author: Ava & Emma
 # Purpose: Collect Lego sets from the Rebrickable API and store them in starwars.db
 
 
@@ -10,7 +10,13 @@ import sqlite3
 DB_NAME = "starwars.db"
 BASE_URL = "https://rebrickable.com/api/v3/lego/sets/"
 LIMIT_PER_RUN = 25  # rubric: max 25 rows per run
-THEME_IDS = {158: "Star Wars", 1: "Technic", 246: "Harry Potter"}
+THEME_IDS = {
+    158: "Star Wars",
+    1: "Technic",
+    246: "Harry Potter",
+    52: "City",
+    435: "Ninjago",
+}
 
 
 def get_api_key(filename="api_keys.txt"):
@@ -98,12 +104,15 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME, page_size=100):
             print(f"Error inserting theme {t_name}: {e}")
     conn.commit()
 
+    max_per_theme = limit / len(THEME_IDS)
     for theme_id, theme_name in THEME_IDS.items():
         if rows_added >= limit:
             print(f"Global limit of {limit} reached. Stopping.")
             break
 
         print(f"\n--- Processing Theme: {theme_name} (ID: {theme_id}) ---")
+
+        rows_added_this_theme = 0
 
         # How many Lego sets in THIS THEME already in DB?
         cursor.execute("SELECT COUNT(*) FROM lego_sets WHERE theme_id = ?", (theme_id,))
@@ -123,52 +132,48 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME, page_size=100):
             print(f"   No data found on page {page_to_fetch} for {theme_name}.")
             continue
 
-        print(
-            f"Fetched {len(lego_sets)} Lego sets from API. Processing with limit {limit}..."
-        )
-
-        for lego_set in lego_sets:
+        for s in lego_sets:
             if rows_added >= limit:
-                print(f"Reached limit of {limit} new Lego rows this run.")
+                break
+            if rows_added_this_theme >= max_per_theme:
+                print(
+                    f"   > Hit 'fair share' limit ({max_per_theme}) for {theme_name}."
+                )
                 break
 
-            set_num = lego_set.get("set_num")
-            name = lego_set.get("name")
-            year = lego_set.get("year")
-            num_parts = lego_set.get("num_parts")
-            theme_id = lego_set.get("theme_id")
-
+            set_num = s.get("set_num")
             if not set_num:
-                continue  # skip weird or incomplete rows
+                continue
 
-            # Skip if set already exists in lego_sets
+            # Skip duplicates
             cursor.execute("SELECT 1 FROM lego_sets WHERE set_num = ?", (set_num,))
             if cursor.fetchone():
                 continue
 
-            # Get the unique name ID of the set from the lego_set_names table
-            cursor.execute("SELECT id FROM lego_set_names where name = ?", (name,))
-            result = cursor.fetchone()
+            # Handle Name ID (lego_set_names table)
+            name = s.get("name")
+            cursor.execute("SELECT id FROM lego_set_names WHERE name = ?", (name,))
+            res = cursor.fetchone()
 
-            if result:
-                # Found it! Use existing ID
-                name_id = result[0]
+            if res:
+                name_id = res[0]
             else:
-                # Step B: Doesn't exist. Now we insert safely.
                 cursor.execute("INSERT INTO lego_set_names (name) VALUES (?)", (name,))
-                name_id = cursor.lastrowid  # Grab the ID of the row we just made
+                name_id = cursor.lastrowid
 
-            # Insert Lego Set using name_id
+            # Insert Lego Set
             cursor.execute(
                 """
                 INSERT INTO lego_sets (set_num, name_id, year, num_parts, theme_id)
                 VALUES (?, ?, ?, ?, ?)
                 """,
-                (set_num, name_id, year, num_parts, theme_id),
+                (set_num, name_id, s.get("year"), s.get("num_parts"), theme_id),
             )
             rows_added += 1
-            print(f"   Added: {name} ({num_parts} parts)")
+            rows_added_this_theme += 1
+            print(f"   Added: {name}")
 
+    conn.commit()
     conn.commit()
     conn.close()
 
