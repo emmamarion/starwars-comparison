@@ -157,7 +157,6 @@ def get_top_movies():
         ("tt10872600", "Spider-Man: No Way Home", 0),
         ("tt15398776", "Oppenheimer", 0),
         ("tt0758758", "Into the Wild", 0),
-        ("tt0848228", "The Avengers", 0),
         ("tt1856101", "Blade Runner 2049", 0),
         ("tt2582846", "The Imitation Game", 0),
         ("tt0266543", "Finding Nemo", 0),

@@ -457,5 +457,4 @@ if __name__ == "__main__":
 
     # Rebrickable visualizations
     plot_lego_complexity_by_year()
-    plot_lego_vs_star_wars_overall()
     print("\nAll visualizations complete!")

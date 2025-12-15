@@ -15,8 +15,8 @@ def database_setup(filename):
     cursor = conn.cursor()
 
     table_1 = """
-        CREATE TABLE IF NOT EXISTS lego_themes (
-            id   INTEGER PRIMARY KEY,
+        CREATE TABLE IF NOT EXISTS lego_set_names (
+            id   INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE
         )
     """
@@ -24,11 +24,19 @@ def database_setup(filename):
     table_2 = """
         CREATE TABLE IF NOT EXISTS lego_sets (
             set_num   TEXT PRIMARY KEY,
-            name      TEXT NOT NULL,
+            name_id   INTEGER,
             year      INTEGER,
             num_parts INTEGER,
             theme_id  INTEGER,
-            FOREIGN KEY(theme_id) REFERENCES lego_themes(id)
+            FOREIGN KEY(name_id) REFERENCES lego_set_names(id),
+            FOREIGN KEY(name_id) REFERENCES lego_themes(id)
+        )
+    """
+
+    table_0 = """
+        CREATE TABLE IF NOT EXISTS lego_themes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE
         )
     """
 
@@ -54,6 +62,7 @@ def database_setup(filename):
     # Parent tables
     cursor.execute(table_1)
     cursor.execute(table_2)
+    cursor.execute(table_0)
     cursor.execute(table_3)
     cursor.execute(table_5)  # Create Comic Table
 
