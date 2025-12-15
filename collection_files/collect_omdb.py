@@ -137,7 +137,8 @@ def get_top_movies():
         ("tt1895587", "Spotlight", 0),
         ("tt2024544", "12 Years a Slave", 0),
         ("tt2096673", "Inside Out", 0),
-        ("tt2106476", "Hacksaw Ridge", 0),
+        ("tt2119532", "Hacksaw Ridge", 0),
+        ("tt2106476", "The Hunt", 0),
         ("tt2267998", "Gone Girl", 0),
         ("tt2278388", "The Grand Budapest Hotel", 0),
         ("tt2380307", "Coco", 0),
@@ -160,20 +161,14 @@ def get_top_movies():
         ("tt1856101", "Blade Runner 2049", 0),
         ("tt2582846", "The Imitation Game", 0),
         ("tt0266543", "Finding Nemo", 0),
-        ("tt1049413", "Up", 0),
         ("tt0114814", "The Usual Suspects", 0),
         ("tt0268380", "Ice Age", 0),
         ("tt0382932", "Ratatouille", 0),
         ("tt1217209", "Brave", 0),
-        ("tt2267998", "Gone Girl", 0),
-        ("tt0993846", "The Wolf of Wall Street", 0),
-        ("tt1205489", "Gran Torino", 0),
-        ("tt0848228", "The Avengers", 0),
         ("tt2015381", "Guardians of the Galaxy", 0),
         ("tt3896198", "Guardians of the Galaxy Vol. 2", 0),
         ("tt4154664", "Captain America: Civil War", 0),
         ("tt3501632", "Thor: Ragnarok", 0),
-        ("tt4154756", "Avengers: Infinity War", 0),
         ("tt1825683", "Black Panther", 0),
         ("tt9376612", "Shang-Chi and the Legend of the Ten Rings", 0),
     ]
@@ -371,3 +366,5 @@ if __name__ == "__main__":
     # Insert data into database (limit 25 per run)
     total_added = insert_into_database(limit=25)
     print(f"Job complete. Total new movies added: {total_added}")
+
+    
