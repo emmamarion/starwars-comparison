@@ -13,10 +13,9 @@ Once an account is created,  generate an API Key from your profile's settings pa
 Add API keys to the api_keys.txt file. Make sure to leave a space between the colon and the API key.
 
 rebrickable: PUT_KEY_HERE
-
 omdb: PUT_KEY_HERE
 
-Run database_setup.py 
+Run database_setup.py
 Run each collect_().py file at least 5 times, located in the collection_files folder.
 collect_lego.py
 collect_omdb.py
