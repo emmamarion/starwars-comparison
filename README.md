@@ -3,7 +3,7 @@
 **Names:** Emma Marion, Kamila Podsiadlo, Ava Anderson
 
 
-6. Instructions for Running Our Code
+Instructions for Running Our Code
 Sign up for OMDB API key here: https://www.omdbapi.com/apikey.aspx
 Create a Rebrickable account for an api key here: https://rebrickable.com/api/
 Once an account is created,  generate an API Key from your profile's settings page.
