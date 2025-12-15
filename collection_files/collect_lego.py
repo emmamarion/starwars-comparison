@@ -10,7 +10,7 @@ import sqlite3
 DB_NAME = "starwars.db"
 BASE_URL = "https://rebrickable.com/api/v3/lego/sets/"
 LIMIT_PER_RUN = 25  # rubric: max 25 rows per run
-TARGET_TOTAL = 100  # rubric: at least 100 rows total
+THEME_IDS = {158: "Star Wars", 1: "Technic", 246: "Harry Potter"}
 
 
 def get_api_key(filename="api_keys.txt"):
@@ -57,7 +57,7 @@ def fetch_lego_sets(api_key, page_size=100, page=1, theme_id=158):
     params = {
         "page_size": page_size,
         "page": page,
-        "theme_id": 158,
+        "theme_id": theme_id,
     }
 
     try:
@@ -79,6 +79,7 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME, page_size=100):
     links to lego_themes.id (shared integer key).
     """
     api_key = get_api_key()
+    rows_added = 0
     if not api_key:
         print("No Rebrickable API key found; aborting Lego collection.")
         return 0
@@ -86,71 +87,87 @@ def insert_lego_sets(limit=25, db_filename=DB_NAME, page_size=100):
     conn = sqlite3.connect(db_filename)
     cursor = conn.cursor()
 
-    # How many Lego sets already in DB?
-    cursor.execute("SELECT COUNT(*) FROM lego_sets")
-    current_count = cursor.fetchone()[0]
-    print(f"Current Lego rows in DB: {current_count}")
+    # Add themes to table
+    for t_id, t_name in THEME_IDS.items():
+        try:
+            cursor.execute(
+                "INSTER OR IGNORE INTO lego_themes (id, name) VALUES (?, ?)",
+                (t_id, t_name),
+            )
+        except sqlite3.Error as e:
+            print(f"Error inserting theme {t_name}: {e}")
+    conn.commit()
 
-    # If we have 0-99 items, we need page 1.
-    # If we have 100-199 items, we need page 2
-    page_to_fetch = (current_count // page_size) + 1
-    print(f"Fetched page {page_to_fetch} from API...")
-
-    # Fetch a big page of sets, we will still only insert up to `limit`
-    lego_sets = fetch_lego_sets(api_key, page_size=page_size, page=page_to_fetch)
-    if not lego_sets:
-        print("No Lego data fetched from API.")
-        conn.close()
-        return 0
-
-    rows_added = 0
-    print(
-        f"Fetched {len(lego_sets)} Lego sets from API. Processing with limit {limit}..."
-    )
-
-    for lego_set in lego_sets:
+    for theme_id, theme_name in THEME_IDS.items():
         if rows_added >= limit:
-            print(f"Reached limit of {limit} new Lego rows this run.")
+            print(f"Global limit of {limit} reached. Stopping.")
             break
 
-        set_num = lego_set.get("set_num")
-        name = lego_set.get("name")
-        year = lego_set.get("year")
-        num_parts = lego_set.get("num_parts")
-        theme_id = lego_set.get("theme_id")
+        print(f"\n--- Processing Theme: {theme_name} (ID: {theme_id}) ---")
 
-        if not set_num:
-            continue  # skip weird or incomplete rows
+        # How many Lego sets in THIS THEME already in DB?
+        cursor.execute("SELECT COUNT(*) FROM lego_sets WHERE theme_id = ?", (theme_id,))
+        count_for_theme = cursor.fetchone()[0]
 
-        # Skip if set already exists in lego_sets
-        cursor.execute("SELECT 1 FROM lego_sets WHERE set_num = ?", (set_num,))
-        if cursor.fetchone():
+        # If we have 0-99 items, we need page 1.
+        # If we have 100-199 items, we need page 2
+        page_to_fetch = (count_for_theme // page_size) + 1
+        print(f"   Existing sets for {theme_name}: {count_for_theme}")
+        print(f"   Fetching Page {page_to_fetch}...")
+
+        # Fetch a big page of sets, we will still only insert up to `limit`
+        lego_sets = fetch_lego_sets(
+            api_key, page_size=page_size, page=page_to_fetch, theme_id=theme_id
+        )
+        if not lego_sets:
+            print(f"   No data found on page {page_to_fetch} for {theme_name}.")
             continue
 
-        # Get the unique name ID of the set from the lego_set_names table
-        cursor.execute("SELECT id FROM lego_set_names where name = ?", (name,))
-        result = cursor.fetchone()
-
-        if result:
-            # Found it! Use existing ID
-            name_id = result[0]
-        else:
-            # Step B: Doesn't exist. Now we insert safely.
-            cursor.execute("INSERT INTO lego_set_names (name) VALUES (?)", (name,))
-            name_id = cursor.lastrowid  # Grab the ID of the row we just made
-
-        # Insert Lego Set using name_id
-        cursor.execute(
-            """
-            INSERT INTO lego_sets (set_num, name_id, year, num_parts, theme_id)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (set_num, name_id, year, num_parts, theme_id),
-        )
-        rows_added += 1
         print(
-            f"Added Lego set: {set_num} - {name} ({num_parts} parts, theme_id={theme_id})"
+            f"Fetched {len(lego_sets)} Lego sets from API. Processing with limit {limit}..."
         )
+
+        for lego_set in lego_sets:
+            if rows_added >= limit:
+                print(f"Reached limit of {limit} new Lego rows this run.")
+                break
+
+            set_num = lego_set.get("set_num")
+            name = lego_set.get("name")
+            year = lego_set.get("year")
+            num_parts = lego_set.get("num_parts")
+            theme_id = lego_set.get("theme_id")
+
+            if not set_num:
+                continue  # skip weird or incomplete rows
+
+            # Skip if set already exists in lego_sets
+            cursor.execute("SELECT 1 FROM lego_sets WHERE set_num = ?", (set_num,))
+            if cursor.fetchone():
+                continue
+
+            # Get the unique name ID of the set from the lego_set_names table
+            cursor.execute("SELECT id FROM lego_set_names where name = ?", (name,))
+            result = cursor.fetchone()
+
+            if result:
+                # Found it! Use existing ID
+                name_id = result[0]
+            else:
+                # Step B: Doesn't exist. Now we insert safely.
+                cursor.execute("INSERT INTO lego_set_names (name) VALUES (?)", (name,))
+                name_id = cursor.lastrowid  # Grab the ID of the row we just made
+
+            # Insert Lego Set using name_id
+            cursor.execute(
+                """
+                INSERT INTO lego_sets (set_num, name_id, year, num_parts, theme_id)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (set_num, name_id, year, num_parts, theme_id),
+            )
+            rows_added += 1
+            print(f"   Added: {name} ({num_parts} parts)")
 
     conn.commit()
     conn.close()
