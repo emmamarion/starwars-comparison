@@ -28,7 +28,15 @@ def database_setup(filename):
             year      INTEGER,
             num_parts INTEGER,
             theme_id  INTEGER,
-            FOREIGN KEY(name_id) REFERENCES lego_set_names(id)
+            FOREIGN KEY(name_id) REFERENCES lego_set_names(id),
+            FOREIGN KEY(name_id) REFERENCES lego_theme_names(id),
+        )
+    """
+
+    table_0 = """
+        CREATE TABLE IF NOT EXISTS lego_theme_names (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT UNIQUE
         )
     """
 
@@ -54,6 +62,7 @@ def database_setup(filename):
     # Parent tables
     cursor.execute(table_1)
     cursor.execute(table_2)
+    cursor.execute(table_0)
     cursor.execute(table_3)
     cursor.execute(table_5)  # Create Comic Table
 
