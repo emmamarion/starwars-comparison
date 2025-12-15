@@ -40,52 +40,6 @@ def get_api_key(filename="api_keys.txt"):
     return api_key
 
 
-def create_lego_tables(db_filename=DB_NAME):
-    """
-    Creates the lego_sets and lego_themes tables if they don't already exist.
-
-    lego_themes:
-        id  INTEGER PRIMARY KEY      (matches Rebrickable theme_id)
-        name TEXT UNIQUE NULL        (optional – we can add later)
-
-    lego_sets:
-        set_num  TEXT PRIMARY KEY
-        name     TEXT NOT NULL
-        year     INTEGER
-        num_parts INTEGER
-        theme_id INTEGER REFERENCES lego_themes(id)
-    """
-    conn = sqlite3.connect(db_filename)
-    cursor = conn.cursor()
-
-    # Theme table (one row per theme_id)
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS lego_themes (
-            id   INTEGER PRIMARY KEY,
-            name TEXT UNIQUE
-        )
-        """
-    )
-
-    # Lego sets table, now with theme_id as integer
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS lego_sets (
-            set_num   TEXT PRIMARY KEY,
-            name      TEXT NOT NULL,
-            year      INTEGER,
-            num_parts INTEGER,
-            theme_id  INTEGER,
-            FOREIGN KEY(theme_id) REFERENCES lego_themes(id)
-        )
-        """
-    )
-
-    conn.commit()
-    conn.close()
-
-
 def fetch_lego_sets(api_key, page_size=100, page=1):
     """
     Fetches Lego sets from the Rebrickable API.
