@@ -29,12 +29,12 @@ def database_setup(filename):
             num_parts INTEGER,
             theme_id  INTEGER,
             FOREIGN KEY(name_id) REFERENCES lego_set_names(id),
-            FOREIGN KEY(name_id) REFERENCES lego_theme_names(id),
+            FOREIGN KEY(name_id) REFERENCES lego_themes(id)
         )
     """
 
     table_0 = """
-        CREATE TABLE IF NOT EXISTS lego_theme_names (
+        CREATE TABLE IF NOT EXISTS lego_themes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE
         )
