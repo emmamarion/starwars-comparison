@@ -333,8 +333,6 @@ if __name__ == "__main__":
     # Write OMDB calculations to file
     write_omdb_calculations_to_file()
 
-    print("\nAll calculations complete!")
-
 # LEGOLEGO LEGOOOO
 
 
@@ -385,8 +383,8 @@ def calculate_top_lego_sets(limit=10, db_filename="starwars.db"):
     query = """
     SELECT s.set_num, n.name, s.year, s.num_parts
     FROM lego_sets s
-    WHERE num_parts IS NOT NULL
     JOIN lego_set_names n ON s.name_id = n.id
+    WHERE num_parts IS NOT NULL
     ORDER BY num_parts DESC
     LIMIT ?;
     """
